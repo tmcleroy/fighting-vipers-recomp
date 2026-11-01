@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- README: a short section per feature, with training mode, the picture and the launcher in docs/TRAINING.md,
+  docs/PICTURE.md and docs/LAUNCHER.md.
 - Toolkit at satrecomp 7b57029, from the Fighters Megamix movie fix: the CD drive goes on reading when
   sectors are taken out of a full buffer, and a CPU's loop that the other CPU overwrites keeps running from
   its cache. Fighting Vipers plays the same, state hash for hash.
