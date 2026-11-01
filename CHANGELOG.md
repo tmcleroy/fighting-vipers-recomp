@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Toolkit at satrecomp 7b57029, from the Fighters Megamix movie fix: the CD drive goes on reading when
+  sectors are taken out of a full buffer, and a CPU's loop that the other CPU overwrites keeps running from
+  its cache. Fighting Vipers plays the same, state hash for hash.
+
 ## 0.1.0-beta.2
 
 The first release from the public repository.
