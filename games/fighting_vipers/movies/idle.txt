@@ -1,0 +1,3 @@
+# satrecomp input movie: frame pad1 pad2 (pressed bits, hex)
+# no input: the title screen, then the opening movie
+0 0000 0000
