@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 0.1.0-beta.2
+
+The first release from the public repository.
+
 - Toolkit at satrecomp a29937a: the file, CD music and controller routines are the toolkit's shared ones
   (`satrecomp/runtime/shared_lifts.h`, also used by Fighters Megamix); the game plays the same, state hash
   for hash. The CD drive gives data sectors, cache purges leave memory alone, the SCU offers a higher
