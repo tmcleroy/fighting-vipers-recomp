@@ -2,6 +2,18 @@
 
 Disc: Fighting Vipers (USA), MK-81041 V2.000 (17 tracks: data + CD audio).
 
+## Unlock everything (2026-11-02)
+
+The save file `FVIPER_MAST` (3,088 bytes) is read to 0x00200000 and kept there. 0x00200080 is a word of
+unlocks: 0x0100 when arcade mode is first finished (0x0601DB5E; Mahler, Options Plus), 0x8000 when finished
+with 0x002000B2 = 4 (the hardest setting; B.M.), 0x0400 at the 50th match (0x0601D300; Kumachan), and
+0x0200 (set at 0x0601D2E4, cleared at 0x060331DA: the Japanese disc's Pepsiman; the US screens mask the word
+with 0x85FF or 0x05FF). 0x00200048 counts matches (Big Heads from the 200th, 0x0603336E); 0x00200AF0 counts
+training mode's OKs (the wall display from the 301st, 0x060336B4). The cheat "unlock_all" raises these
+(satrecomp `Game::saveUnlocks`). Checked: the records screens list Mahler, B.M. and Kumachan; native_74 with
+it on plays a match (the game sees 201 matches) and the file keeps the player's own count (1) and unlocks.
+Not checked by hand: the character select and Options Plus with it on.
+
 ## The training mode, run-ahead, the dummy at random (2026-10-14)
 
 Features taken over from the CPS-2 ports (Vampire Savior's), on satrecomp at
