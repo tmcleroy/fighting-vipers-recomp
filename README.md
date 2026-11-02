@@ -52,7 +52,8 @@ stay off in the other modes.
 - **Save states**: nine slots, from the menu or F5 / F9 ([keys](docs/LAUNCHER.md#keys-while-playing)).
 - **Run-ahead**: what you press seen a frame or two sooner, the game running exactly as without it
   ([more](docs/LAUNCHER.md#run-ahead)).
-- **Armour** that stays on, or fighters without it; **cheats** (no damage, one-hit knockouts, infinite time);
+- **Armour** that stays on, or fighters without it; **cheats** (no damage, one-hit knockouts, infinite time,
+  everything unlocked without touching your save);
   **quick rounds** ([more](docs/LAUNCHER.md#the-features-page)).
 - **Controls**: a gamepad or the keyboard for two players, every button changeable, and buttons pressed together on
   one key ([more](docs/LAUNCHER.md#controllers)).
