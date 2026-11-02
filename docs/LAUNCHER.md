@@ -20,7 +20,9 @@ the [picture's options](PICTURE.md):
 - **Armour** (one at a time): armour that stays on (it takes no damage, and armour knocked off is put back),
   an opponent without it, or nobody with it.
 - **Cheats**: no damage (for player 1, or player 2), one-hit knockouts, infinite time (the round's clock
-  stands still).
+  stands still), and **unlock everything**: Mahler, B.M., Kumachan, Options Plus, Big Heads and the wall display
+  without playing for them. Your save keeps what you have really unlocked (matches you play still count), so with it
+  off the game is as you left it. It takes effect when the game next starts or is reset.
 - **Quick rounds**: the waits before and after a round cut short.
 
 ### Run-ahead

@@ -33,9 +33,6 @@ void RegisterShared() {
     Register(kGfsStart, 0x06045020);
     Register(kGfsPoll, 0x06045394);
     Register(kGfsClose, 0x06045308);
-    Register(kGfsFread, 0x06045C2C);
-    // the opening movie's player (a second program) carries the same Fread
-    Register(kGfsFread, 0x060A8E2C, "GFS Fread (movie player)");
     Register(kCdPlay, 0x0604490C);
     Register(kCdSeek, 0x060449D0);
     Register(kCdGetCurStat, 0x06044384);

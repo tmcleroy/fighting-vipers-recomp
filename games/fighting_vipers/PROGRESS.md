@@ -2,6 +2,18 @@
 
 Disc: Fighting Vipers (USA), MK-81041 V2.000 (17 tracks: data + CD audio).
 
+## Unlock everything (2026-11-02)
+
+The save file `FVIPER_MAST` (3,088 bytes) is read to 0x00200000 and kept there. 0x00200080 is a word of
+unlocks: 0x0100 when arcade mode is first finished (0x0601DB5E; Mahler, Options Plus), 0x8000 when finished
+with 0x002000B2 = 4 (the hardest setting; B.M.), 0x0400 at the 50th match (0x0601D300; Kumachan), and
+0x0200 (set at 0x0601D2E4, cleared at 0x060331DA: the Japanese disc's Pepsiman; the US screens mask the word
+with 0x85FF or 0x05FF). 0x00200048 counts matches (Big Heads from the 200th, 0x0603336E); 0x00200AF0 counts
+training mode's OKs (the wall display from the 301st, 0x060336B4). The cheat "unlock_all" raises these
+(satrecomp `Game::saveUnlocks`). Checked: the records screens list Mahler, B.M. and Kumachan; native_74 with
+it on plays a match (the game sees 201 matches) and the file keeps the player's own count (1) and unlocks.
+Not checked by hand: the character select and Options Plus with it on.
+
 ## The training mode, run-ahead, the dummy at random (2026-10-14)
 
 Features taken over from the CPS-2 ports (Vampire Savior's), on satrecomp at
@@ -378,13 +390,12 @@ Ymir is only the reference in the development build (`make ref`).
 3. (Done: CD, after start-up.) The game's use of the CD drive is replaced where it asks for it
    (once games/fighting_vipers/src/files.cpp and music.cpp; since 2026-11-01 the toolkit's
    satrecomp/runtime/shared_lifts.h, shared with Fighters Megamix, registered in src/game.cpp): its own LoadFile, the file library's
-   Open/Start/Poll/Close, the opening movie player's Fread, and the CD library's CdPlay, CdSeek and
-   GetCurStat, with which it plays its music (audio tracks, played by runtime/music.cpp into the
-   sound chip's CD input). The standard file library's Fread is replaced in both programs that carry
-   it (the game, whose start-up reads the disc's directory with it, and the opening movie's player),
-   so no sector is read through the drive at all. What the drive still gets is set-up: about 30
-   commands when the game starts and 70 when the movie player does (initialise, table of contents,
-   filters, a seek). The SMPC
+   Open/Start/Poll/Close, and the CD library's CdPlay, CdSeek and GetCurStat, with which it plays its
+   music (audio tracks, played by runtime/music.cpp into the sound chip's CD input). The standard file
+   library's Fread is the game's own and reads through the drive (satrecomp/machine/cd.cpp): the
+   disc's directory at start-up, the sound program and samples before a fight, and the opening movie.
+   (It was replaced until 2026-11-01; the replacement read at once, where the game waits in Fread
+   with its interrupts running, and a fight's sound effects stopped after the first.) The SMPC
    is still emulated for what else the game asks of it (clock, system commands).
 4. (Done: sound generation.) What the sound chip does to make each sample (voices, envelopes, LFOs,
    FM, the effects DSP, the mix) is satrecomp's (satrecomp/docs/SOUND.md), step for step what the
