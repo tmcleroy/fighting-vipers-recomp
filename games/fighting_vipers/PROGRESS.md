@@ -378,13 +378,12 @@ Ymir is only the reference in the development build (`make ref`).
 3. (Done: CD, after start-up.) The game's use of the CD drive is replaced where it asks for it
    (once games/fighting_vipers/src/files.cpp and music.cpp; since 2026-11-01 the toolkit's
    satrecomp/runtime/shared_lifts.h, shared with Fighters Megamix, registered in src/game.cpp): its own LoadFile, the file library's
-   Open/Start/Poll/Close, the opening movie player's Fread, and the CD library's CdPlay, CdSeek and
-   GetCurStat, with which it plays its music (audio tracks, played by runtime/music.cpp into the
-   sound chip's CD input). The standard file library's Fread is replaced in both programs that carry
-   it (the game, whose start-up reads the disc's directory with it, and the opening movie's player),
-   so no sector is read through the drive at all. What the drive still gets is set-up: about 30
-   commands when the game starts and 70 when the movie player does (initialise, table of contents,
-   filters, a seek). The SMPC
+   Open/Start/Poll/Close, and the CD library's CdPlay, CdSeek and GetCurStat, with which it plays its
+   music (audio tracks, played by runtime/music.cpp into the sound chip's CD input). The standard file
+   library's Fread is the game's own and reads through the drive (satrecomp/machine/cd.cpp): the
+   disc's directory at start-up, the sound program and samples before a fight, and the opening movie.
+   (It was replaced until 2026-11-01; the replacement read at once, where the game waits in Fread
+   with its interrupts running, and a fight's sound effects stopped after the first.) The SMPC
    is still emulated for what else the game asks of it (clock, system commands).
 4. (Done: sound generation.) What the sound chip does to make each sample (voices, envelopes, LFOs,
    FM, the effects DSP, the mix) is satrecomp's (satrecomp/docs/SOUND.md), step for step what the
