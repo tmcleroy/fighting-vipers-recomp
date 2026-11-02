@@ -2,11 +2,13 @@
 
 ## Unreleased
 
+## 0.1.0-beta.3
+
 - Unlock everything (Cheats): Mahler, B.M., Kumachan, Options Plus, Big Heads and the wall display, without
   playing for them. The game is shown its save with them unlocked; the save kept is your own (matches played
   still count), so with it off the game has what you have unlocked. From the next start or reset. Toolkit at
-  satrecomp 3100b56 (save unlocks).
-- Toolkit at satrecomp c5cb660: the file library's Fread is the game's own again, reading through the CD drive
+  satrecomp a7b9c65 (save unlocks).
+- Toolkit at satrecomp a7b9c65: the file library's Fread is the game's own again, reading through the CD drive
   (the toolkit's replacement read at once; in Fighters Megamix that stopped a fight's sound effects). The
   opening movie reads through the drive too. The widescreen cage limit is the toolkit's shared one now, with
   a wider margin. Known: a fight's sound effects are still missing (the music plays); the cause is in how the
