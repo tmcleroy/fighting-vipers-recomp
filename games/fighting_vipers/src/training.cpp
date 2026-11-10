@@ -1039,12 +1039,17 @@ namespace {
         if (satrecomp::FeatureOn("input_display") && g_state.fightSeen) {
             for (int player = 0; player < 2; player++) {
                 const State::Inputs &inputs = g_state.inputs[player];
-                // (a list down the side, the newest at the top, each with the frames it was held)
+                // (a list down the side, the newest at the top, each with the frames it was held; the stick at rest with
+                // nothing pressed, 5, is not a line)
+                int row = 0;
                 for (uint32_t i = 0; i < inputs.count; i++) {
                     const uint32_t entry = inputs.count - 1 - i;
+                    if (!inputs.shown[entry]) {
+                        continue;
+                    }
                     char text[32];
                     snprintf(text, sizeof(text), "%3u %-4s", inputs.frames[entry], Notation(inputs.shown[entry]).c_str());
-                    lines.push_back({player == 0 ? 0.01f : 0.99f, 0.3f + 0.047f * static_cast<float>(i), player == 0 ? -1 : 1, text});
+                    lines.push_back({player == 0 ? 0.01f : 0.99f, 0.3f + 0.047f * static_cast<float>(row++), player == 0 ? -1 : 1, text});
                 }
             }
         }

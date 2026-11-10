@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- The training mode's input display no longer shows the stick at rest (5) as a line.
+
 ## 0.1.0-beta.3
 
 - Unlock everything (Cheats): Mahler, B.M., Kumachan, Options Plus, Big Heads and the wall display, without
