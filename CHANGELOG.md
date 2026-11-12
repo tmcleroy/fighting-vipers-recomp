@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Sound effects in fights: fights had only the music and the round calls. The round's start hands the sound
+  driver a request and waits for it to be taken; that code runs from the rewritten round code, where no time
+  passed for the driver, so the game decided the driver was dead and turned effects off. The sound side now
+  keeps up during such calls, and reads of the sound chip take as long as on the hardware. Toolkit at
+  satrecomp 2086530.
 - The training mode's input display no longer shows the stick at rest (5) as a line.
 
 ## 0.1.0-beta.3
