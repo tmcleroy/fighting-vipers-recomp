@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.1.0-beta.4
+
 - Sound effects in fights: fights had only the music and the round calls. The round's start hands the sound
   driver a request and waits for it to be taken; that code runs from the rewritten round code, where no time
   passed for the driver, so the game decided the driver was dead and turned effects off. The sound side now
