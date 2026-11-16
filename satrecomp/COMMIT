@@ -1,5 +1,5 @@
 # A copy of the satrecomp toolkit, made by its tools/sync-toolkit.sh. Do not change it here.
-commit 1efd388a297401273610378d55d1d2c773f27e52
+commit b39a90b9cf6110d602e616b9eaa5c22fdbe42a6c
 87feb3b2ade3dc944b5e7005da6608ee27e6aad48a36a399acddac2c1fc2a921  .gitignore
 453c278d2caa9247cd46fb7b9343f9b8ae2e9ed34321f64e335b8081890c801b  CMakeLists.txt
 8ceb4b9ee5adedde47b31e975c1d90c73ad27b6b165a1dcd80c7c545eb65b903  LICENSE
