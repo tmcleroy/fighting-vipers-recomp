@@ -223,6 +223,8 @@ namespace {
     std::unique_ptr<Runtime> g_rt;
     std::vector<Lift> g_lifts;
     DiscFileReader g_discFileReader;
+    DiscFileReader g_extraDiscFileReader;
+    DiscFileLister g_discFileLister;
     DiscSectorReader g_discSectorReader;
     PadReader g_padReader;
 
@@ -1686,6 +1688,19 @@ void SetDiscFileReader(DiscFileReader reader) {
 
 bool ReadDiscFile(const std::string &name, std::vector<uint8_t> &data) {
     return g_discFileReader && g_discFileReader(name, data);
+}
+
+void SetExtraDiscFileReader(DiscFileReader reader) {
+    g_extraDiscFileReader = std::move(reader);
+}
+bool ReadExtraDiscFile(const std::string &name, std::vector<uint8_t> &data) {
+    return g_extraDiscFileReader && g_extraDiscFileReader(name, data);
+}
+void SetDiscFileLister(DiscFileLister lister) {
+    g_discFileLister = std::move(lister);
+}
+std::vector<std::string> DiscFileNames(bool extra) {
+    return g_discFileLister ? g_discFileLister(extra) : std::vector<std::string>{};
 }
 
 void SetDiscSectorReader(DiscSectorReader reader) {

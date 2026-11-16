@@ -155,6 +155,15 @@ in its header) and `extra_disc_name` let the launcher find it beside the player'
 a folder in it), say so under the disc, and start the game with it. Only read, like the first. Fighting
 Vipers takes Pepsiman from its Japanese release this way.
 
+**Export pictures.** A game that sets `Game::exportPictures` hands the toolkit its pictures (in the Saturn's 16-bit
+colour, or files that are pictures already), and the menu gets a Pictures page under Game (on the first page for a
+game with no Game page) with two commands: Export pictures writes them as JPEG files
+(`port/jpeg_write.h`: baseline, no colour subsampling, quality 95) to `pictures/` in the player's folder (where
+settings.ini is: the launcher's YOUR FILES), saying in its description where and, when done, how many; Show pictures
+folder opens that folder in the file manager. `--export-pictures FRAME[:FOLDER]` does the same in a test. A game
+reaches both discs' files for them through `DiscFileNames`, `ReadDiscFile` and `ReadExtraDiscFile` (the second
+disc's own copy of a file both have).
+
 **Widescreen in the menu.** The port's feature `widescreen` (the menu's Display page; GPU renderer only)
 switches the wide picture while playing, from the next frame. Its switch is the launcher's own (on its
 first page, so it is left out of `--list-features`: `kFeatureFirstPage`), which says at every start

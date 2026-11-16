@@ -579,3 +579,10 @@ the splits only in a fight (main state 8 at 0x06090760) and not in training mode
 select's top row and SELECT CPU TYPE are on the same rows of NBG2. Honey's clothes in arcade too: there the
 pictures of characters 11 and 12 (Pandachan's, Tokio's/Pepsiman's) are Honey's while she wears them, for the
 ending; both outfits tested to the end of the credits.
+
+## Export pictures (2026-11-16)
+
+src/pictures.cpp: every full-screen picture file (512x224, 16-bit, the picture in the left 352): PO_xxxnn (the
+characters'), OVER_00, and from the Japanese disc PO_PEPnn, ZOMAKE00-21 and its own versions of the eleven that
+differ (PO_GRA04, PO_HON02-04, PO_JAN02, PO_PIC02-03, PO_SAN01, PO_SAN04, PO_TKO04-05: "-japan"). Named
+grace-1, gallery-01, game-over. 47 from the American disc, 84 with both. Through satrecomp's Export pictures.

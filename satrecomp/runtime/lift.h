@@ -85,6 +85,13 @@ void RegisterLifts(const Lift *lifts, size_t count);
 using DiscFileReader = std::function<bool(const std::string &name, std::vector<uint8_t> &data)>;
 void SetDiscFileReader(DiscFileReader reader);
 bool ReadDiscFile(const std::string &name, std::vector<uint8_t> &data);
+// The second disc's own copy of a file (--extra-disc), even where the first has one of that name; false without a
+// second disc or such a file. And the names of the files on either disc (upper case; none without that disc).
+void SetExtraDiscFileReader(DiscFileReader reader);
+bool ReadExtraDiscFile(const std::string &name, std::vector<uint8_t> &data);
+using DiscFileLister = std::function<std::vector<std::string>(bool extra)>;
+void SetDiscFileLister(DiscFileLister lister);
+std::vector<std::string> DiscFileNames(bool extra = false);
 
 // Reads one sector (2048 bytes) of the disc's data track by its frame address; false past its end.
 using DiscSectorReader = std::function<bool(uint32_t frameAddress, uint8_t *out)>;

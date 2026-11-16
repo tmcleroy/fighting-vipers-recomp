@@ -212,7 +212,8 @@ const launcher::Description& launcher::describe() {
         Description d;
         d.original = "on the Saturn";
         d.file_heading = "GAME DISC";
-        d.file_intro = "Choose your own copy of the game (a disc image). It stays where it is: the launcher only reads it.";
+        d.file_intro = "Choose your own copy of the game (a disc image). It stays where it is: the launcher only reads it. Pictures you "
+                       "export from the in-game menu (Export pictures) go to the pictures folder of YOUR FILES, below.";
         d.file_empty = "No game disc chosen. Drop its .cue file on this window or choose it.";
         d.file_not_set_up = "The game isn't set up yet. Open the launcher (without --play) once to choose your game disc.";
         d.file_filter = {"Saturn disc image", "cue;iso"};

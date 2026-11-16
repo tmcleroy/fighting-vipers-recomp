@@ -210,6 +210,28 @@ int RunWindowed(Port &port) {
     // (--mute starts with no sound; the menu's Sound row switches it on, so the device is opened all the same)
     Audio audio;
     port.menu.muted = port.opt.mute;
+    // (Show pictures folder: the folder as a file:// address, its bytes outside the plain ones as %XX)
+    port.openFolder = [](const std::string &folder) {
+        std::string url = "file://";
+#ifdef _WIN32
+        url += '/';
+#endif
+        for (const unsigned char c : folder) {
+            const bool plain = (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '/' || c == '-' ||
+                               c == '_' || c == '.' || c == '~' || c == ':';
+            if (plain) {
+                url += static_cast<char>(c);
+            } else if (c == '\\') {
+                url += '/';
+            } else {
+                static const char kHex[] = "0123456789ABCDEF";
+                url += '%';
+                url += kHex[c >> 4];
+                url += kHex[c & 15];
+            }
+        }
+        SDL_OpenURL(url.c_str());
+    };
     bool silent = false;
     {
         const SDL_AudioSpec spec{SDL_AUDIO_S16, 2, 44100};
