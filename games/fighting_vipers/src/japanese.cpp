@@ -24,6 +24,7 @@
 // So with this feature on, the ninth character's file names are the Japanese ones and the five masks take
 // 0x0200 too; the game does the rest as the Japanese one does, and he is unlocked as there (or by "Unlock
 // everything", cheats.cpp). Off, the American game is as it was.
+#include "fv.h"
 #include "game.h"
 #include "lift.h"
 #include "shared_lifts.h"
@@ -129,7 +130,7 @@ void SetProgram(bool on) {
 // The file tables' characters 11 to 14 are Honey in other clothes in the Japanese program (and Honey as she is
 // in the American one, whose disc has none of their files): models MPAI, MNHO, MEHO and MSHO (0 and 1) with
 // their textures (T...), the first three on Honey's own motions, the fourth on its own (MOT_SHN) with its own
-// win file (WSHONEY). Characters 11 to 14 are set up for them in the program (its per-character tables);
+// win file (WSHONEY): Aloha Honey, who has a ukulele attack. EHO is Uniform Honey. Characters 11 to 14 are set up for them in the program (its per-character tables);
 // giving Honey's own number (6) other clothes' files does not work: the model set-up (0x06022018) does not
 // finish for those whose models differ. In the Japanese game the character select gives Honey's player one
 // of 11 to 14 (with buttons held as she is chosen, once unlocked: bits 0x4000 and 0x2000 of the unlock word,
@@ -187,6 +188,12 @@ void SetHoneyClothes(int chosen) {
         SetName(kMotions + at, c.motion, {other.motion});
         SetName(kWins + at, c.win, {other.win});
     }
+    // (as in the Japanese game, only in versus, team battle and training: the arcade's endings would take
+    // the twelfth character's pictures, which are Pepsiman's)
+    const uint8_t mode = Ram(fv::kGameMode) ? *Ram(fv::kGameMode) : 0;
+    if (mode != fv::kModeVersus && mode != fv::kModeTeam && mode != fv::kModeTraining) {
+        return;
+    }
     for (uint32_t player = 0; player < 2; player++) {
         uint8_t *p = Ram(kChosen + player);
         if (p && chosen && *p == kHoneyCharacter) {
@@ -229,8 +236,9 @@ void RegisterJapanese() {
                                   "select, move left from Grace. From the next character select.", kFeatureEnhanced});
     TheGame().features.push_back({kHoneyFeature, "Game", "Honey's clothes",
                                   "The other clothes the Japanese release gives Honey (Candy), from your Japanese disc (keep it in "
-                                  "the same folder as your American disc). Every Honey chosen wears them. From her next fight.",
-                                  0, {"Her own", "Pink", "Her own, white ribbon", "School uniform", "Summer clothes"}});
+                                  "the same folder as your American disc). In versus, team battle and training, as there; every "
+                                  "Honey chosen wears them. From her next fight.",
+                                  0, {"Her own", "Pink", "White ribbon", "Uniform", "Aloha (with a ukulele attack)"}});
     const shared::Routine &original = shared::kAm2LoadFile;
     const shared::Routine loadFile = {original.name, original.size, original.hash, LoadFile};
     shared::Register(loadFile, 0x06029B44);

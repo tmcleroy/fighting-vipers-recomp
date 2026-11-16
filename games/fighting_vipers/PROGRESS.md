@@ -25,8 +25,31 @@ arcade run through all eight stages and B.M. ("PEPSIMAN VS B.M." screen) to the 
 and nothing interpreted in his fights, as with Grace. With the feature off, or on without his disc, native_74's
 state hash is the same as before every frame of 12,000; with unlock_all on and Pepsiman off, the same for
 6,000. Not checked by hand: playing him, his sounds, his win poses up close, his ending in a window.
-Not taken over: the Japanese release's further Honey clothes (characters 11-14: MPAI/MNHO/MEHO/MSHO, mask bits
-0x6000) and its picture gallery (ZOMAKE00-21.BIN, 22 pictures of 512x224 the American program still names).
+## Honey's clothes from the Japanese disc (2026-11-16)
+
+Characters 11-14 of the file tables are Honey in other clothes in the Japanese program: MPAI (pink), MNHO (her
+own with a white ribbon), MEHO (Uniform Honey), MSHO (Aloha Honey: its own motions MOT_SHN, with a ukulele
+attack, and win file WSHONEY); the American program names Honey's files there. Giving character 6 their files
+hangs the model set-up (0x06022018) for the three whose models differ: they must be characters 11-14. In Japan
+the select screen gives them (own icons; versus, team battle, training only; unlocked at 0x0601DBF6, bits
+0x4000/0x2000, by finishing arcade as Honey on Normal / Hard), and holding X or Z as Honey is chosen sets save
+byte 0x002000E5 / 0x060E0037; that code is cut from the American select program (540 bytes shorter), which runs
+in VDP1's memory where no lift can go. So feature `honey_clothes` (choice; src/japanese.cpp) names the Japanese
+files for 11-14 and turns a chosen Honey (0x06091EE0, a byte a player) into 10 + the choice, in versus, team
+battle and training (fv::kModeTraining is 5). Checked: all four in arcade fights before the mode limit (and a
+loss, continue, game over), training (both players), her own in arcade after it; native_74's hashes as main's.
+Not checked by hand: Aloha's ukulele attack, versus and team battle.
+
+## The Portrait gallery (found, not taken over)
+
+The American program still has the Japanese release's picture viewer: main states 37 (0x06043FD0), 38
+(0x060440B0: loads picture 0x0609D7B8 through 0x0602B9AC) and 39 (0x06044104: left/right, 0 to 101). Pictures
+0-79 are the characters' PO_xxx0n.BIN (on the American disc), 80-101 ZOMAKE00-21.BIN (512x224, 16-bit; only on
+the Japanese disc). Options Plus (states 50/51, 0x06032F14/0x06033044; cursor row 0x060879EC) still has the
+code for row 4 (Portrait: state 37) and row 3 (Pepsiman Reset: clears 0x0200, sets 0x002000E4), but the
+American menu shows neither row. With the Japanese disc, the viewer (entered by setting state 37 in a test)
+shows the gallery pictures. Options Plus does not hang with Pepsiman's bit set (a reported hang of American
+copies with a Japanese save is something else).
 
 Seen on the way, not his: the staff roll after the last match stops on its title (the same frame, Grace or
 Pepsiman, on main's build too), with random input; not looked into.
