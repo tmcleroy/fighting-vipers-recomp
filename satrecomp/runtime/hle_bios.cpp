@@ -573,6 +573,10 @@ namespace {
             return;
         }
         for (const SaveField &f : u.fields) {
+            if (f.needs && !FeatureOn(f.needs)) {
+                g.saveAdded.push_back(0);
+                continue;
+            }
             const uint32_t was = FieldGet(data, f);
             const uint32_t now = f.kind == SaveField::kBits ? was | f.value : std::max(was, f.value);
             g.saveAdded.push_back(f.kind == SaveField::kBits ? now & ~was : now - was);

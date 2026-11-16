@@ -16,6 +16,7 @@
 #include <filesystem>
 #include <fstream>
 #include <system_error>
+#include <vector>
 
 namespace {
 
@@ -68,6 +69,50 @@ bool read_disc_header(const std::string& file, char header[256]) {
     return false;
 }
 
+// The product number in a disc image's header (.cue or .iso), or "" if it is not a readable Saturn disc
+std::string disc_product(const std::filesystem::path& image) {
+    std::string ext = lower_extension(image.string());
+    std::string data = ext == ".cue" ? first_track_of(image.string()) : ext == ".iso" ? image.string() : std::string();
+    char header[256];
+    if (data.empty() || !read_disc_header(data, header)) {
+        return {};
+    }
+    return trimmed(header + 0x20, 10);
+}
+
+// A second disc of the game (game.cfg's extra_disc_product: one the game takes some files from, as Fighting
+// Vipers takes a character from its Japanese release), looked for beside the player's disc: in its folder and
+// the folders in that. "" if the game has none or it is not there. Only read, as the player's.
+std::string find_extra_disc(const std::string& disc) {
+    if (std::strlen(LAUNCHER_EXTRA_DISC_PRODUCT) == 0 || disc.empty()) {
+        return {};
+    }
+    std::error_code error;
+    const std::filesystem::path folder = std::filesystem::path(disc).parent_path();
+    std::vector<std::filesystem::path> folders = {folder};
+    for (const auto& entry : std::filesystem::directory_iterator(folder, error)) {
+        if (entry.is_directory(error)) {
+            folders.push_back(entry.path());
+        }
+    }
+    for (const std::filesystem::path& where : folders) {
+        std::vector<std::filesystem::path> images;
+        for (const auto& entry : std::filesystem::directory_iterator(where, error)) {
+            const std::string ext = lower_extension(entry.path().string());
+            if (entry.is_regular_file(error) && (ext == ".cue" || ext == ".iso")) {
+                images.push_back(entry.path());
+            }
+        }
+        std::sort(images.begin(), images.end());
+        for (const std::filesystem::path& image : images) {
+            if (disc_product(image) == LAUNCHER_EXTRA_DISC_PRODUCT) {
+                return image.string();
+            }
+        }
+    }
+    return {};
+}
+
 // A disc image: .cue (with its .bin files) or .iso, the two the port reads (port/disc_image.cpp). Reads the
 // disc's header to tell which game and release it is. The launcher only ever reads it: never copies, moves or
 // changes it.
@@ -107,7 +152,11 @@ launcher::FileCheck check_disc(const std::string& path) {
     }
     std::string product = trimmed(header + 0x20, 10);
     std::string version = trimmed(header + 0x2A, 6);
-    if (product != LAUNCHER_DISC_PRODUCT) {
+    if (product != LAUNCHER_DISC_PRODUCT && std::strlen(LAUNCHER_EXTRA_DISC_PRODUCT) > 0 && product == LAUNCHER_EXTRA_DISC_PRODUCT) {
+        check.result = Result::NotUsable;
+        check.message = "This is " LAUNCHER_EXTRA_DISC_NAME ". Choose " LAUNCHER_DISC_NAME " here, and keep this one in the same "
+                        "folder (or a folder in it): the game takes what it needs from it.";
+    } else if (product != LAUNCHER_DISC_PRODUCT) {
         check.result = Result::NotUsable;
         check.message = "This disc is a different game (" + trimmed(header + 0x60, 112) + "), not " LAUNCHER_GAME_NAME ".";
     } else if (version != LAUNCHER_DISC_VERSION) {
@@ -117,6 +166,11 @@ launcher::FileCheck check_disc(const std::string& path) {
         check.result = Result::Good;
         check.message = LAUNCHER_DISC_NAME ", verified.";
     }
+    if (check.result != Result::NotUsable && std::strlen(LAUNCHER_EXTRA_DISC_PRODUCT) > 0) {
+        check.message += find_extra_disc(path).empty()
+            ? " (" LAUNCHER_EXTRA_DISC_NAME " isn't beside it: what the game takes from that disc is left out.)"
+            : " " LAUNCHER_EXTRA_DISC_NAME " found beside it.";
+    }
     return check;
 }
 
@@ -124,6 +178,10 @@ launcher::FileCheck check_disc(const std::string& path) {
 std::vector<std::string> arguments(const launcher::Launch& launch) {
     std::vector<std::string> args = {"--disc", launch.file, "--backup", (launch.folder / "saves" / "backup.bin").string(),
                                      "--settings", (launch.folder / "settings.ini").string()};
+    if (const std::string extra = find_extra_disc(launch.file); !extra.empty()) {
+        args.push_back("--extra-disc");
+        args.push_back(extra);
+    }
     if (launch.on("fullscreen")) {
         args.push_back("--fullscreen");
     }
