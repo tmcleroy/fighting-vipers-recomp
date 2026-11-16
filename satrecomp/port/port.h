@@ -14,6 +14,7 @@
 #include <map>
 #include <memory>
 #include <mutex>
+#include <functional>
 #include <string>
 #include <vector>
 
@@ -166,6 +167,9 @@ struct Port {
     bool SetResetPoint(std::string &error);
     bool GoToResetPoint(std::string &error);
     std::string resetTest; // tests: "SET:GO": the reset point set at one frame and gone back to at another
+    std::string exportTest; // tests: "FRAME[:FOLDER]": Export pictures at that frame (to that folder)
+    // Shows a folder in the system's file manager (the frontend's; nothing without a window)
+    std::function<void(const std::string &folder)> openFolder;
     bool LoadState(const std::string &path, std::string &error);
     // Where slot n's state is kept (beside the save memory)
     std::string StatePath(int slot) const;

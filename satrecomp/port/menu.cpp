@@ -4,6 +4,7 @@
 #include "menu.h"
 
 #include "game.h"
+#include "pictures.h"
 #include "port.h"
 
 #include <iterator>
@@ -12,7 +13,7 @@ namespace port {
 
 namespace {
     // The first page's own rows
-    enum { kSetResetPoint = 1, kGoToResetPoint, kResetGame };
+    enum { kSetResetPoint = 1, kGoToResetPoint, kResetGame, kExportPictures, kShowPictures };
 
     // The speeds, in hundredths
     const int kSpeeds[] = {100, 50, 25};
@@ -49,6 +50,15 @@ void Menu::Configure(bool withStates) {
                                         "Keeps the game as it is now as the point to practise from (F2)."});
         config.groups.back().push_back({recomp::MenuRow::Action, kGoToResetPoint, "Go to reset point",
                                         "Goes back to the reset point (F3, or the right stick's click)."});
+    }
+    if (satrecomp::TheGame().exportPictures) {
+        const std::string folder = PicturesFolder();
+        config.groups.back().push_back({recomp::MenuRow::Action, kExportPictures, "Export pictures",
+                                        "Writes the game's pictures (its gallery and the like) as JPEG files to " + folder +
+                                            " (the pictures folder in your files: the launcher's Game page, YOUR FILES, "
+                                            "Show). Files already there are written over."});
+        config.groups.back().push_back({recomp::MenuRow::Action, kShowPictures, "Show pictures folder",
+                                        "Opens " + folder + " (where Export pictures writes) in your file manager."});
     }
     config.groups.push_back({});
     if (withStates) {
@@ -108,7 +118,13 @@ Menu::Action Menu::Press(unsigned buttons) {
     case recomp::Menu::Chosen::Load: return Action::Load;
     case recomp::Menu::Chosen::Quit: return Action::Quit;
     case recomp::Menu::Chosen::Action:
-        return chosen.id == kSetResetPoint ? Action::SetResetPoint : chosen.id == kGoToResetPoint ? Action::GoToResetPoint : Action::ResetGame;
+        switch (chosen.id) {
+        case kSetResetPoint: return Action::SetResetPoint;
+        case kGoToResetPoint: return Action::GoToResetPoint;
+        case kExportPictures: return Action::ExportPictures;
+        case kShowPictures: return Action::ShowPictures;
+        default: return Action::ResetGame;
+        }
     default: return Action::None;
     }
 }

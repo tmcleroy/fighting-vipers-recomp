@@ -19,7 +19,7 @@ namespace port {
 
 class Menu {
 public:
-    enum class Action { None, Save, Load, SetResetPoint, GoToResetPoint, ResetGame, Quit };
+    enum class Action { None, Save, Load, SetResetPoint, GoToResetPoint, ResetGame, ExportPictures, ShowPictures, Quit };
 
     // withStates: show the save state rows and the reset point's
     void Open(bool withStates);

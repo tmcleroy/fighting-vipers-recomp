@@ -22,6 +22,14 @@ public:
         return m_systemArea;
     }
 
+    // The names of its files (upper case)
+    std::vector<std::string> Names() const {
+        std::vector<std::string> names;
+        for (const auto &[name, file] : m_files) {
+            names.push_back(name);
+        }
+        return names;
+    }
     // Reads a whole file by name (upper or lower case; in any directory if the name is not in the root)
     bool Read(const std::string &name, std::vector<uint8_t> &data) const;
 

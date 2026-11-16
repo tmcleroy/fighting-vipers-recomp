@@ -8,6 +8,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <initializer_list>
+#include <functional>
 #include <string>
 #include <vector>
 
@@ -73,9 +74,20 @@ struct Page {
     const char *description = "";  // what its row says ("": the menu's own words)
 };
 
+// Pictures a game can write out for the player (the menu's Export pictures: port/pictures.h), handed over one at a
+// time. `picture`: in the Saturn's colour (16-bit words, big-endian, red in the low five bits), `width` by `height`
+// dots, `stride` dots from one row to the next; written as a JPEG. `file`: a file that is a picture already (a
+// JPEG on the disc), written as it is. `name`: the file's name without its extension.
+struct PictureOut {
+    std::function<void(const std::string &name, const uint8_t *pixels, int width, int height, int stride)> picture;
+    std::function<void(const std::string &name, const std::vector<uint8_t> &bytes, const std::string &extension)> file;
+};
+
 struct Game {
     std::vector<Feature> features;
     std::vector<Page> pages;
+    // The game's pictures for Export pictures (the menu has that row only with this)
+    void (*exportPictures)(PictureOut &out) = nullptr;
     // With saveUnlocks.feature on, the backup library (hle_bios.cpp) gives the game its save file with these
     // fields raised, and takes out again what it added when the game writes the file: the game sees all it
     // unlocks by them, and the file keeps what the player has done (a count goes on from the player's own). It

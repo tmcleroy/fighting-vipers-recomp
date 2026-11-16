@@ -3,6 +3,7 @@
 // satrecomp port entry point: sets up the Saturn hardware, attaches the recompiled game code and runs it,
 // either in a window (frontend_sdl.cpp) or headless for tests and tools.
 #include "hud.h"
+#include "pictures.h"
 #include "port.h"
 
 #include "png_write.h"
@@ -215,6 +216,12 @@ bool Port::OpenDiscFiles() {
     }
     satrecomp::SetDiscFileReader([this](const std::string &name, std::vector<uint8_t> &data) {
         return discFiles.Read(name, data) || (haveExtraDisc && extraDiscFiles.Read(name, data));
+    });
+    satrecomp::SetExtraDiscFileReader([this](const std::string &name, std::vector<uint8_t> &data) {
+        return haveExtraDisc && extraDiscFiles.Read(name, data);
+    });
+    satrecomp::SetDiscFileLister([this](bool extra) {
+        return extra ? (haveExtraDisc ? extraDiscFiles.Names() : std::vector<std::string>{}) : discFiles.Names();
     });
     return true;
 }
@@ -786,6 +793,13 @@ void Port::RunFrame() {
         }
         menu.Close();
     }
+    // (tests: --export-pictures FRAME[:FOLDER])
+    if (!exportTest.empty() && strtoull(exportTest.c_str(), nullptr, 10) == frame) {
+        const size_t colon = exportTest.find(':');
+        std::string error;
+        const int written = ExportPictures(colon == std::string::npos ? PicturesFolder() : exportTest.substr(colon + 1), error);
+        fprintf(stderr, "export pictures: %s\n", written < 0 ? error.c_str() : (std::to_string(written) + " written").c_str());
+    }
     // (tests: --reset-test SET:GO)
     if (!resetTest.empty()) {
         std::string error;
@@ -872,6 +886,23 @@ void Port::MenuAct(Menu::Action action) {
     if (action == Menu::Action::Quit) {
         quit = true;
         menu.Close();
+        return;
+    }
+    if (action == Menu::Action::ExportPictures || action == Menu::Action::ShowPictures) {
+        // (the menu stays open, its note saying what happened and where)
+        const std::string folder = PicturesFolder();
+        std::string error;
+        if (action == Menu::Action::ShowPictures) {
+            std::error_code fault;
+            std::filesystem::create_directories(folder, fault);
+            if (openFolder) {
+                openFolder(folder);
+            }
+            menu.Note("Opened " + folder);
+            return;
+        }
+        const int written = ExportPictures(folder, error);
+        menu.Note(written < 0 ? error : "Wrote " + std::to_string(written) + " pictures to " + folder);
         return;
     }
     std::string error;
@@ -1298,6 +1329,7 @@ static void Usage(const char *argv0) {
             "                         recomp: cycle-exact recompiled blocks (the interpreter's handlers)\n"
             "                         interp: the interpreter by blocks (exact reference for recomp)\n"
             "                         pure:   the unmodified interpreter, instruction by instruction\n"
+            "  --export-pictures FRAME[:FOLDER]  write the game's pictures (the menu's Export pictures) at that frame\n"
             "  --dump-decode PATH     write the SH-2 opcode decode table (used by tools/recomp.py) and exit\n"
             "  --record-blocks PATH   add every newly reached code block to this block database\n"
             "  --features A,B         enable optional features (--list-features lists them; -NAME: off)\n"
@@ -1367,6 +1399,8 @@ int main(int argc, char **argv) {
             o.recordBlocks = next();
         } else if (a == "--reset-test") {
             p.resetTest = next();
+        } else if (a == "--export-pictures") {
+            p.exportTest = next();
         } else if (a == "--features") {
             o.features = next();
         } else if (a == "--fullscreen") {
