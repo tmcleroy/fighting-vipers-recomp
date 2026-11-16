@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-only
 // Copyright (C) 2026 Tommy McLeroy. Part of Fighting Vipers Recomp: https://github.com/tmcleroy/fighting-vipers-recomp
 // What the Japanese release has that the American one left out, from the player's Japanese disc (the port's
-// --extra-disc; nothing of it is in this repository): Pepsiman, and Honey's other clothes.
+// --extra-disc; nothing of it is in this repository): Pepsiman, Honey's other clothes, and Options Plus's
+// PORTRAIT (the picture gallery) and PEPSIMAN RESET.
 //
 // PEPSIMAN
 //
@@ -204,6 +205,70 @@ void SetHoneyClothes(int chosen) {
     }
 }
 
+// OPTIONS PLUS: PORTRAIT AND PEPSIMAN RESET
+//
+// Options Plus (main states 50 and 51: 0x06032F14, 0x06033044) has eight rows, each a place and a label in a
+// table (0x06087B24: x, y, the label's address). Row 3 is PEPSIMAN RESET (locks him again: clears 0x0200 of the
+// unlock word) and row 4 PORTRAIT (the picture viewer, main states 37 to 39: the characters' pictures and the
+// gallery's ZOMAKE00-21, which only the Japanese disc has). The American program has both rows whole, labels
+// and what they do, and leaves them out in three places only: the cursor skips them (0x060330CA-0x060330E4:
+// cmp/eq #3 and #4), the drawing skips them (0x060332F2, 0x060332F6) and its table of each row's drawing sends
+// both to the end (0x06033352, 0x06033354: 0x66 where the others have 0x3E). In the Japanese program the cursor
+// skips neither, PORTRAIT is drawn as the others and PEPSIMAN RESET only once he is unlocked. Here the compares
+// are given -1 (no row) and the table entries the others' value: PORTRAIT with the feature "portrait" (and the
+// Japanese disc), PEPSIMAN RESET with Pepsiman in and unlocked.
+constexpr const char *kPortraitFeature = "portrait";
+struct CodeWord {
+    uint32_t at;
+    uint16_t american, shown;
+};
+constexpr uint16_t kCmpEqMinus1 = 0x88FF;
+constexpr CodeWord kPortraitWords[] = {
+    {0x060330CE, 0x8804, kCmpEqMinus1}, {0x060330D8, 0x8804, kCmpEqMinus1}, // the cursor
+    {0x060332F6, 0x8804, kCmpEqMinus1},                                   // the drawing
+    {0x06033354, 0x0066, 0x003E},                                         // its table
+};
+constexpr CodeWord kResetWords[] = {
+    {0x060330CA, 0x8803, kCmpEqMinus1}, {0x060330E4, 0x8803, kCmpEqMinus1},
+    {0x060332F2, 0x8803, kCmpEqMinus1},
+    {0x06033352, 0x0066, 0x003E},
+};
+constexpr uint32_t kUnlocks = 0x00200080;
+
+int g_haveGallery = -1;
+
+bool PortraitOn() {
+    if (!FeatureOn(kPortraitFeature)) {
+        return false;
+    }
+    if (g_haveGallery < 0) {
+        std::vector<uint8_t> data;
+        g_haveGallery = ReadDiscFile("ZOMAKE00.BIN", data) ? 1 : 0;
+        if (!g_haveGallery) {
+            fprintf(stderr, "Portrait: the gallery's pictures are not on the disc (the Japanese disc is needed too); left out\n");
+        }
+    }
+    return g_haveGallery == 1;
+}
+
+template <size_t N>
+void SetCode(const CodeWord (&words)[N], bool shown) {
+    for (const CodeWord &w : words) {
+        const uint16_t now = Ram16(w.at);
+        if (now != w.american && now != w.shown) {
+            continue; // (not the game's code there)
+        }
+        if (const uint16_t want = shown ? w.shown : w.american; now != want) {
+            SetRam16(w.at, want);
+        }
+    }
+}
+
+void SetOptionsPlus(bool pepsiman) {
+    SetCode(kPortraitWords, PortraitOn());
+    SetCode(kResetWords, pepsiman && (Ram16(kUnlocks) & kPepsiman) != 0);
+}
+
 // The game's LoadFile (shared::kAm2LoadFile), and then, when it has just loaded the character select's
 // program, that program's masks
 bool LoadFile(Guest &g) {
@@ -225,7 +290,9 @@ bool LoadFile(Guest &g) {
 } // namespace
 
 void JapaneseAfterFrame() {
-    SetProgram(On());
+    const bool pepsiman = On();
+    SetProgram(pepsiman);
+    SetOptionsPlus(pepsiman);
     SetHoneyClothes(HoneyClothes());
 }
 
@@ -239,6 +306,10 @@ void RegisterJapanese() {
                                   "the same folder as your American disc). In versus, team battle and training, as there; every "
                                   "Honey chosen wears them. From her next fight.",
                                   0, {"Her own", "Pink", "White ribbon", "Uniform", "Aloha (with a ukulele attack)"}});
+    TheGame().features.push_back({kPortraitFeature, "Game", "Portrait in Options Plus",
+                                  "The Japanese release's picture viewer, back in Options Plus: the characters' pictures and the "
+                                  "gallery's 22 more, from your Japanese disc (keep it in the same folder as your American disc).",
+                                  kFeatureEnhanced});
     const shared::Routine &original = shared::kAm2LoadFile;
     const shared::Routine loadFile = {original.name, original.size, original.hash, LoadFile};
     shared::Register(loadFile, 0x06029B44);

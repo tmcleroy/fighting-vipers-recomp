@@ -6,6 +6,16 @@
   that shot in double interlace (twice the lines), which the GPU renderer drew at twice its height; it is drawn
   at its height now, as the software renderer and the Saturn draw it.
 - Toolkit at satrecomp 433f324 (also: the shared `shared::MusicCarriesOn` option, which this game does not use).
+- Pepsiman, the Japanese release's extra fighter (Game, Enhanced): keep your Japanese disc image (Fighting Vipers
+  (Japan)) in the same folder as the American one, or a folder in it, and the game takes his files from it; the
+  launcher says under your disc whether it found it. He is unlocked as in Japan, or by Unlock everything; on the
+  character select, left of Kumachan, left of Grace. Toolkit at satrecomp 232cf72 (--extra-disc).
+- Honey's clothes (Game): the Japanese release's other four (Pink, White ribbon, Uniform, Aloha with its
+  ukulele attack), from the same disc, in versus, team battle and training as there.
+- Portrait in Options Plus (Game, Enhanced): the Japanese release's picture viewer, the characters' pictures and
+  a gallery of 22 more from the same disc; with Pepsiman unlocked, Options Plus's PEPSIMAN RESET row too.
+- Unlock everything now shows Options Plus on the title's menu, as it said it did (the menu shows it only after
+  arcade mode is finished, which the cheat did not count).
 
 ## 0.1.0-beta.4
 
