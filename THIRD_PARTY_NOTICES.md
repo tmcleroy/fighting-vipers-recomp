@@ -40,6 +40,16 @@ follow it. recomp-common's own `THIRD_PARTY_NOTICES.md` has the table, file by f
 The 5x7 dot-matrix font of the menu (`satrecomp/recomp-common/text.h`) is the generic character
 set of LCD and LED displays, typed in for recomp-common.
 
+The custom soundtrack reads music files with single-file decoders kept in `satrecomp/port/decoders/` as their
+projects publish them (each with its licence at its end), compiled unchanged into the game:
+
+| File | Project | Licence |
+| --- | --- | --- |
+| `satrecomp/port/decoders/stb_vorbis.c` | [stb](https://github.com/nothings/stb) `stb_vorbis` 1.22 (commit 2c980bb), by Sean Barrett | Public domain, or MIT |
+| `satrecomp/port/decoders/dr_flac.h` | [dr_libs](https://github.com/mackron/dr_libs) `dr_flac` 0.13.4 (commit dfe8377), by David Reid | Public domain, or MIT No Attribution |
+| `satrecomp/port/decoders/dr_mp3.h` | dr_libs `dr_mp3` 0.7.4 (the same commit), by David Reid, after minimp3 by lieff | Public domain, or MIT No Attribution |
+| `satrecomp/port/decoders/dr_wav.h` | dr_libs `dr_wav` 0.14.6 (the same commit), by David Reid | Public domain, or MIT No Attribution |
+
 ## Downloaded at build time and included in release builds
 
 None of these is stored in this repository.
