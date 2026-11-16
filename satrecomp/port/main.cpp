@@ -131,6 +131,14 @@ static void RegisterPortFeatures() {
                              "the shaders folder beside the game's settings. The picture's shape stays as set.",
                              0, {"Off", "CRT", "CRT Lottes", "CRT Royale", "CRT Guest", "CRT Light", "Scanlines, light",
                                  "Scanlines, strong", "Scanlines, OSSC", "Scanlines, dark", "xBRZ", "ScaleFX", "Your own"}});
+    // (custom_soundtrack: soundtrack.h; for a game whose sources name its music)
+    if (!game.songs.empty()) {
+        game.features.push_back({"custom_soundtrack", "Sound", "Custom soundtrack",
+                                 "Your own music in place of the disc's: files named after the songs (the songs.txt in the "
+                                 "folder lists them) in the folder chosen on the launcher's game page, or tracks of another "
+                                 "disc named in its soundtrack.ini. The game's volume and fades apply to it.",
+                                 satrecomp::kFeatureEnhanced});
+    }
     game.features.push_back({"window_size", "Display", "Window size",
                              "How large the window opens, in times 240 lines (it can be made any size by dragging its "
                              "edges; full screen is on the launcher's first page and F11).",
@@ -535,6 +543,7 @@ bool Port::Init() {
     }
     satrecomp::music::SetDisc({[this](int track) { return discFiles.AudioSectors(track); },
                                [this](int track, uint32_t sector, uint8_t *out) { return discFiles.ReadAudioSector(track, sector, out); }});
+    OpenSoundtrack();
     satrecomp::SetDiscSectorReader([this](uint32_t frameAddress, uint8_t *out) { return discFiles.ReadDataSector(frameAddress, out); });
     satrecomp::SetPadReader([this](int player) { return static_cast<uint16_t>(pad[player & 1].load() & 0xFFF8); });
     {
@@ -834,6 +843,7 @@ void Port::RunFrame() {
     }
 #endif
     SetWideSplitsOn();
+    soundtrack.on = satrecomp::FeatureOn("custom_soundtrack"); // (switched in the menu: from this frame on)
     saturn->RunFrame();
     frame++;
     if (satrecomp::TheGame().frame) {
@@ -935,13 +945,36 @@ bool Port::MenuPicture(std::vector<uint32_t> &pixels, uint32_t &width, uint32_t 
     return width && height;
 }
 
+// A custom soundtrack (soundtrack.h): the folder the launcher chose, or "soundtrack" beside settings.ini. Its songs
+// are read whether the feature is on or not (it can be switched on in the menu), and play while it is.
+void Port::OpenSoundtrack() {
+    if (satrecomp::TheGame().songs.empty() && opt.soundtrack.empty()) {
+        return;
+    }
+    std::string folder = opt.soundtrack;
+    if (folder.empty() && !opt.settingsPath.empty()) {
+        folder = (std::filesystem::path(opt.settingsPath).parent_path() / "soundtrack").string();
+    }
+    if (folder.empty()) {
+        return;
+    }
+    if (const int found = soundtrack.Open(folder)) {
+        fprintf(stderr, "soundtrack: %d %s from %s\n", found, found == 1 ? "song" : "songs", folder.c_str());
+    }
+    soundtrack.on = satrecomp::FeatureOn("custom_soundtrack");
+    satrecomp::music::SetReplacement({[this](int track) { return soundtrack.Has(track); },
+                                      [this](int track, uint64_t n, bool repeat, int16_t &left, int16_t &right) {
+                                          return soundtrack.Sample(track, n, repeat, left, right);
+                                      }});
+}
+
 std::string Port::StatePath(int slot) const {
     return (std::filesystem::path(opt.backupPath).parent_path() / ("state" + std::to_string(slot) + ".bin")).string();
 }
 
 #ifdef SATRECOMP_OWN_MACHINE
 namespace {
-    constexpr uint32_t kStateMagic = 0x53525354, kStateVersion = 8;
+    constexpr uint32_t kStateMagic = 0x53525354, kStateVersion = 9; // (9: the CD music's place for a custom soundtrack)
 
     // Everything a later moment depends on, in one order for writing and reading
     void StateOf(Port &port, satrecomp::Archive &ar) {
@@ -1322,6 +1355,8 @@ static void Usage(const char *argv0) {
             "Usage: %s --disc GAME.cue [options]\n"
             "  --bios BIOS.bin        start through a Saturn BIOS image instead of the native BIOS\n"
             "  --extra-disc GAME.cue  another disc of the game: files not on --disc are read from it\n"
+            "  --soundtrack DIR       a custom soundtrack's folder (its songs.txt names the files; port/soundtrack.h)\n"
+            "  --list-songs           the songs a custom soundtrack's files are named for: name, track, what it is\n"
             "  --backup PATH          internal backup memory image (saves)\n"
             "  --cpu MODE             native (default) | free | recomp | interp | pure\n"
             "                         native: satrecomp's own translation of the game code, free running\n"
@@ -1371,6 +1406,12 @@ int main(int argc, char **argv) {
             o.discPath = next();
         } else if (a == "--extra-disc") {
             o.extraDiscPath = next();
+        } else if (a == "--soundtrack") {
+            o.soundtrack = next();
+        } else if (a == "--list-songs") {
+            satrecomp::RegisterGame();
+            fputs(port::Soundtrack::SongList().c_str(), stdout);
+            return 0;
         } else if (a == "--backup") {
             o.backupPath = next();
         } else if (a == "--cpu") {

@@ -74,6 +74,27 @@ struct Page {
     const char *description = "";  // what its row says ("": the menu's own words)
 };
 
+// A piece of the game's music: one of its disc's audio tracks, by the name a custom soundtrack's file for it goes by
+// (port/soundtrack.h: "vf2_akira.flac") and what it is
+struct Song {
+    int track;
+    const char *name;
+    const char *title;
+};
+
+// Another disc whose audio tracks hold some of the game's music (as recorded for another game, often longer): when
+// its disc image is in a custom soundtrack's folder (or soundtrack.ini names it: disc = ...), its tracks play for
+// those songs, unless the folder has music of its own for them
+struct SongDisc {
+    // Which disc: by the product number its header gives ("MK-81041"; a disc whose number starts so), or, where
+    // every release has the same tracks, by the title there ("VIRTUA FIGHTER 2") with product nullptr
+    const char *product;
+    const char *title;
+    const char *name;                        // as the player knows it ("Fighting Vipers (USA)")
+    const char *what;                        // what music it gives (songs.txt; nullptr: nothing said)
+    std::vector<std::pair<int, int>> tracks; // this game's track, and that disc's with the same music
+};
+
 // Pictures a game can write out for the player (the menu's Export pictures: port/pictures.h), handed over one at a
 // time. `picture`: in the Saturn's colour (16-bit words, big-endian, red in the low five bits), `width` by `height`
 // dots, `stride` dots from one row to the next; written as a JPEG. `file`: a file that is a picture already (a
@@ -85,6 +106,9 @@ struct PictureOut {
 
 struct Game {
     std::vector<Feature> features;
+    // The disc's music, for a custom soundtrack (port/soundtrack.h); none: its files go by the tracks' numbers alone
+    std::vector<Song> songs;
+    std::vector<SongDisc> songDiscs;
     std::vector<Page> pages;
     // The game's pictures for Export pictures (the menu has that row only with this)
     void (*exportPictures)(PictureOut &out) = nullptr;

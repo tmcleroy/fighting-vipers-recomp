@@ -50,7 +50,15 @@ if (EXISTS "${GAME_CFG}")
     file(STRINGS "${GAME_CFG}" GAME_EXTRA_DISC_NAME REGEX "^extra_disc_name[ \t]*=")
     string(REGEX REPLACE "^extra_disc_name[ \t]*=[ \t]*" "" GAME_EXTRA_DISC_NAME "${GAME_EXTRA_DISC_NAME}")
 endif ()
+# (the other games' discs a custom soundtrack knows the music of, game.cfg's `soundtrack_discs`: named on the Sound
+# card's soundtrack row, port/soundtrack.h)
+set(GAME_SOUNDTRACK_DISCS "")
+if (EXISTS "${GAME_CFG}")
+    file(STRINGS "${GAME_CFG}" GAME_SOUNDTRACK_DISCS REGEX "^soundtrack_discs[ \t]*=")
+    string(REGEX REPLACE "^soundtrack_discs[ \t]*=[ \t]*" "" GAME_SOUNDTRACK_DISCS "${GAME_SOUNDTRACK_DISCS}")
+endif ()
 target_compile_definitions(launcher PRIVATE
+    "LAUNCHER_SOUNDTRACK_DISCS=\"${GAME_SOUNDTRACK_DISCS}\""
     LAUNCHER_DISC_NAME="${DISC_NAME}" LAUNCHER_DISC_PRODUCT="${DISC_PRODUCT}" LAUNCHER_DISC_VERSION="${DISC_VERSION}"
     "SATRECOMP_COMBOS=\"${GAME_COMBOS}\""
     "LAUNCHER_EXTRA_DISC_PRODUCT=\"${GAME_EXTRA_DISC_PRODUCT}\"" "LAUNCHER_EXTRA_DISC_NAME=\"${GAME_EXTRA_DISC_NAME}\"")

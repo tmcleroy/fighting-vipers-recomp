@@ -38,6 +38,17 @@ bool IsPlaying(int first, int last);
 int CurrentTrack();
 uint32_t CurrentSector();
 
+// A custom soundtrack (port/soundtrack.h): another sound played in place of some of the tracks. The game sees
+// the disc's track play as before (its length, where it is); only what the sound chip hears is the other's.
+// `has(track)`: there is one for that track; `sample(track, n, repeat, left, right)`: its n-th sample since the
+// game started the track (repeat: the game plays the track over and over, so the other sound loops too; not:
+// it plays once), false when it has no more.
+struct Replacement {
+    std::function<bool(int track)> has;
+    std::function<bool(int track, uint64_t n, bool repeat, int16_t &left, int16_t &right)> sample;
+};
+void SetReplacement(Replacement replacement);
+
 // Save states (state.h): what is playing and where
 void Serialize(Archive &ar);
 

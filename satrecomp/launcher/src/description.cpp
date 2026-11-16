@@ -221,6 +221,15 @@ const launcher::Description& launcher::describe() {
         d.check = check_disc;
         d.arguments = arguments;
         d.saves_folder = true;
+        // (a custom soundtrack's files and discs: port/soundtrack.h)
+        static const std::string soundtrack_detail =
+            std::string("Music in place of the disc's, while the Custom soundtrack feature is on. Put in this folder your own "
+                        "music files, named after the songs") +
+            (std::strlen(LAUNCHER_SOUNDTRACK_DISCS) > 0 ? std::string(", or the disc image of ") + LAUNCHER_SOUNDTRACK_DISCS + " (its .cue and .bin files)"
+                                                        : std::string()) +
+            ". The game writes songs.txt there: the songs' names, and what plays for each. None chosen: the soundtrack folder "
+            "in the game's own folder.";
+        d.folders = {{"soundtrack", "Custom soundtrack", soundtrack_detail.c_str(), "--soundtrack"}};
         d.display = {
             // (a window unless asked, as in the other ports; in SteamOS's Game Mode the other way round)
             {"fullscreen", "Full screen", "F11 switches while playing.", console_session(), nullptr},

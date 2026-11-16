@@ -155,6 +155,27 @@ in its header) and `extra_disc_name` let the launcher find it beside the player'
 a folder in it), say so under the disc, and start the game with it. Only read, like the first. Fighting
 Vipers takes Pepsiman from its Japanese release this way.
 
+**A custom soundtrack.** The port's feature `custom_soundtrack` (the menu's Sound page; on in the Enhanced
+preset), for a game whose sources name its music (`Game::songs`: each audio track's name, as `vf2_akira`): the
+player's own music plays in place of the disc's tracks (`port/soundtrack.h`). It comes from a folder (the
+launcher's game page chooses it, `--soundtrack DIR`; none: `soundtrack` beside `settings.ini`), one file a song,
+named after the song or its track's number, as Ogg Vorbis, FLAC, MP3 or WAV; the game writes the names into the
+folder as `songs.txt` (`--list-songs` prints them). `soundtrack.ini` there can name a file for a song, its loop,
+its volume, or a track of another disc image the player has (`disc = ...`, `track = N`). A game may list other
+discs with some of its music (`Game::songDiscs`: a disc's product number, or its title where every release has
+the same tracks, and which of its tracks are which of the game's): such a disc image put in the folder (its .cue,
+or a folder with it) is found and used with nothing more. `songs.txt`, written at every start, says how, which
+discs were found, and what plays for each song; game.cfg's `soundtrack_discs` names the discs on the launcher's
+row. Fighters Megamix takes the Vipers' and Virtua Fighter 2's stage music, full length, from their discs this
+way.
+
+The music goes where the disc's would, into the sound chip's CD audio input (`runtime/music.h`, `Replacement`),
+so the game's volume, fades and effects apply to it. The game sees its own track play as before (its length,
+where it is), and its memory stays the same as without it, so save states, run-ahead and the checks are not
+touched; only the sound differs. A song repeats when the game repeats its track and is played once when the
+game plays it once, and a song longer than the track plays on to its end unless the game asks for other music
+first. A file is read on a thread of its own from the moment its song is asked for (the samples of the last
+three songs kept in memory), changed to the CD's rate on the way.
 **Export pictures.** A game that sets `Game::exportPictures` hands the toolkit its pictures (in the Saturn's 16-bit
 colour, or files that are pictures already), and the menu gets a Pictures page under Game (on the first page for a
 game with no Game page) with two commands: Export pictures writes them as JPEG files
