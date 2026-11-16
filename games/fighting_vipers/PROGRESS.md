@@ -559,3 +559,23 @@ balls, the clock and the eye are the same in every frame of 6,000 as with it off
 `FV_CAMERA=YAW,PITCH,DISTANCE` sets a turn for pictures with no window. Not seen in a window: turning it with a
 stick or keys.
 
+
+## The credits' stream; the menu's pages; widescreen splits in fights only (2026-11-16)
+
+The game streams some files through the file library (0x06029C18 opens and starts one, 0x06029C80 polls it, a
+queue of 64-byte records at 0x06093F00, the current one's handle pointed to by 0x06086FD4). 0x0602B7AC asks
+after that handle too, from a loading routine and from the frame loop (jsr at 0x0602263E, returning to
+0x06022642), which throws the answer away. The toolkit's GFS Poll gives "complete" once and forgets the file,
+so when the frame loop asked first the stream never saw it: the credits after the last match (MOT_BAH.BIN)
+waited forever, and in ordinary play a background queue of 11 files had loaded 2 by frame 5200 (native_74).
+satrecomp's PollOnlyLooks: polls from 0x0602B7AC called by the frame loop only look (src/game.cpp). The two
+recorded movies' pictures are unchanged (native_74 every 1000 frames, own_auto_7 every 400); their RAM hashes
+differ from frame 4770 of native_74, where the queue now loads.
+
+The menu: Alternative modes (game.pages) → Training mode (the aids' category, renamed from Training) → Dummy
+(and its counter, recovery, wake-up pages; "Dummy struggles in throws" and "Dummy answers now and then" moved
+there); Reset game at the bottom (the toolkit's power-on state). Widescreen: Game::wideSplitsOn (widescreen.cpp):
+the splits only in a fight (main state 8 at 0x06090760) and not in training mode, whose display, character
+select's top row and SELECT CPU TYPE are on the same rows of NBG2. Honey's clothes in arcade too: there the
+pictures of characters 11 and 12 (Pandachan's, Tokio's/Pepsiman's) are Honey's while she wears them, for the
+ending; both outfits tested to the end of the credits.
