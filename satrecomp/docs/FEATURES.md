@@ -156,7 +156,8 @@ a folder in it), say so under the disc, and start the game with it. Only read, l
 Vipers takes Pepsiman from its Japanese release this way.
 
 **Export pictures.** A game that sets `Game::exportPictures` hands the toolkit its pictures (in the Saturn's 16-bit
-colour, or files that are pictures already), and the menu gets two rows: Export pictures writes them as JPEG files
+colour, or files that are pictures already), and the menu gets a Pictures page under Game (on the first page for a
+game with no Game page) with two commands: Export pictures writes them as JPEG files
 (`port/jpeg_write.h`: baseline, no colour subsampling, quality 95) to `pictures/` in the player's folder (where
 settings.ini is: the launcher's YOUR FILES), saying in its description where and, when done, how many; Show pictures
 folder opens that folder in the file manager. `--export-pictures FRAME[:FOLDER]` does the same in a test. A game

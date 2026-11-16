@@ -63,8 +63,8 @@ kick**: buttons pressed together, held as one. They have no key or button until 
 
 The **in-game menu** stops the game while it is open: **Alternative modes** (training mode's aids, and the
 dummy's page under them), save and load a state (nine slots), a page for each kind of feature, the speed, the
-reset point, **Export pictures** and **Show pictures folder**, **Reset game** (the game starts again as when
-switched on; your saves are kept) and **Quit game**, which is how you leave (Esc only closes the menu). Up and down choose a row; A, B, C or Start change it or go into a page; left and right change a row
+reset point, **Reset game** (the game starts again as when switched on; your saves are kept) and **Quit game**,
+which is how you leave (Esc only closes the menu). **Game → Pictures** has Export pictures and Show pictures folder. Up and down choose a row; A, B, C or Start change it or go into a page; left and right change a row
 with several values and leave a page.
 
 ## Updates
@@ -94,9 +94,9 @@ nothing is moved either way. The folder has to be one you can write to, or the l
 
 ## Exporting the pictures
 
-**Export pictures** in the in-game menu writes the game's full-screen pictures as JPEG files (352 by 224, as the
+**Export pictures** (in the in-game menu, **Game → Pictures**) writes the game's full-screen pictures as JPEG files (352 by 224, as the
 Saturn shows them): each character's ending pictures, the game over picture, and with the Japanese disc beside
 yours, Pepsiman's, the Portrait gallery's 22 and the Japanese versions of the eleven the American release changed
 (named `-japan`). They go to the `pictures` folder in your files: on a Mac `~/Library/Application Support/Fighting
 Vipers/pictures`, or wherever the launcher's Game page says under YOUR FILES (its **Show** button opens it).
-**Show pictures folder** in the menu opens it too. Exporting again writes the same files over.
+**Show pictures folder**, on the same page, opens it too. Exporting again writes the same files over.

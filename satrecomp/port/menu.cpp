@@ -7,13 +7,14 @@
 #include "pictures.h"
 #include "port.h"
 
+#include <algorithm>
 #include <iterator>
 
 namespace port {
 
 namespace {
     // The first page's own rows
-    enum { kSetResetPoint = 1, kGoToResetPoint, kResetGame, kExportPictures, kShowPictures };
+    enum { kSetResetPoint = 1, kGoToResetPoint, kResetGame };
 
     // The speeds, in hundredths
     const int kSpeeds[] = {100, 50, 25};
@@ -52,13 +53,19 @@ void Menu::Configure(bool withStates) {
                                         "Goes back to the reset point (F3, or the right stick's click)."});
     }
     if (satrecomp::TheGame().exportPictures) {
+        // A Pictures page under Game (the page of the game's own options; on the first page for a game without one),
+        // with its two commands (Press: the first exports, the second shows the folder)
+        const bool gamePage = std::any_of(satrecomp::TheGame().features.begin(), satrecomp::TheGame().features.end(),
+                                          [](const satrecomp::Feature &f) { return std::string(f.category) == "Game"; });
         const std::string folder = PicturesFolder();
-        config.groups.back().push_back({recomp::MenuRow::Action, kExportPictures, "Export pictures",
-                                        "Writes the game's pictures (its gallery and the like) as JPEG files to " + folder +
-                                            " (the pictures folder in your files: the launcher's Game page, YOUR FILES, "
-                                            "Show). Files already there are written over."});
-        config.groups.back().push_back({recomp::MenuRow::Action, kShowPictures, "Show pictures folder",
-                                        "Opens " + folder + " (where Export pictures writes) in your file manager."});
+        config.pages.push_back({"Pictures", gamePage ? "Game" : "",
+                                "Export the game's pictures as JPEG files, and show the folder they go to.", false});
+        config.commands.push_back({"Pictures", "Export pictures",
+                                   "Writes the game's pictures (its gallery and the like) as JPEG files to " + folder +
+                                       " (the pictures folder in your files: the launcher's Game page, YOUR FILES, Show). "
+                                       "Files already there are written over."});
+        config.commands.push_back({"Pictures", "Show pictures folder",
+                                   "Opens " + folder + " (where Export pictures writes) in your file manager."});
     }
     config.groups.push_back({});
     if (withStates) {
@@ -117,12 +124,11 @@ Menu::Action Menu::Press(unsigned buttons) {
     case recomp::Menu::Chosen::Save: return Action::Save;
     case recomp::Menu::Chosen::Load: return Action::Load;
     case recomp::Menu::Chosen::Quit: return Action::Quit;
+    case recomp::Menu::Chosen::Command: return chosen.id == 0 ? Action::ExportPictures : Action::ShowPictures;
     case recomp::Menu::Chosen::Action:
         switch (chosen.id) {
         case kSetResetPoint: return Action::SetResetPoint;
         case kGoToResetPoint: return Action::GoToResetPoint;
-        case kExportPictures: return Action::ExportPictures;
-        case kShowPictures: return Action::ShowPictures;
         default: return Action::ResetGame;
         }
     default: return Action::None;

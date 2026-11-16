@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- Export pictures (in-game menu): every full-screen picture of the game as a JPEG file, 84 with the Japanese
+- Export pictures (in-game menu, Game → Pictures): every full-screen picture of the game as a JPEG file, 84 with the Japanese
   disc beside yours (the endings, the Portrait gallery, Pepsiman's, the Japanese versions), to the pictures folder
   in your files; Show pictures folder opens it. Toolkit at satrecomp (Export pictures).
 - The winner's close-up after a fight: the winner was drawn mostly off the bottom of the screen. The game draws
