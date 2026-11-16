@@ -20,6 +20,8 @@ void RegisterCheats() {
     //   title's Options Plus), 0x8000 when finished on the hardest setting (B.M.), 0x0400 at the 50th match
     //   (0x0601D300: Kumachan). The screens read it through 0x85FF or 0x05FF; 0x0200 is the Japanese disc's
     //   Pepsiman, raised only with the feature that brings him in (japanese.cpp).
+    // - 0x002000E0, a byte set to 1 when arcade mode is finished (0x06026F5C): the title's mode menu has Options
+    //   Plus (an eighth entry, 0x0603372C) only with it set; the bit 0x0100 above is not what shows it.
     // - 0x00200048, the matches played: Big Heads in Options Plus from the 200th (0x0603336E, "more than 199").
     // - 0x00200AF0, training mode's OKs: the wall display from the 301st (0x060336B4, "more than 299").
     game.features.push_back({"unlock_all", "Cheats", "Unlock everything",
@@ -28,6 +30,7 @@ void RegisterCheats() {
     game.saveUnlocks = {"unlock_all", "FVIPER_MAST", {
         {0x80, 2, SaveField::kBits, 0x8500},
         {0x80, 2, SaveField::kBits, 0x0200, "pepsiman"},
+        {0xE0, 1, SaveField::kAtLeast, 1},
         {0x48, 4, SaveField::kAtLeast, 200},
         {0xAF0, 2, SaveField::kAtLeast, 301},
     }};

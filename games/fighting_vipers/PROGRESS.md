@@ -40,20 +40,27 @@ battle and training (fv::kModeTraining is 5). Checked: all four in arcade fights
 loss, continue, game over), training (both players), her own in arcade after it; native_74's hashes as main's.
 Not checked by hand: Aloha's ukulele attack, versus and team battle.
 
-## The Portrait gallery (found, not taken over)
+## Options Plus: Portrait and Pepsiman Reset (2026-11-16)
 
 The American program still has the Japanese release's picture viewer: main states 37 (0x06043FD0), 38
-(0x060440B0: loads picture 0x0609D7B8 through 0x0602B9AC) and 39 (0x06044104: left/right, 0 to 101). Pictures
-0-79 are the characters' PO_xxx0n.BIN (on the American disc), 80-101 ZOMAKE00-21.BIN (512x224, 16-bit; only on
-the Japanese disc). Options Plus (states 50/51, 0x06032F14/0x06033044; cursor row 0x060879EC) still has the
-code for row 4 (Portrait: state 37) and row 3 (Pepsiman Reset: clears 0x0200, sets 0x002000E4), but the
-American menu shows neither row. With the Japanese disc, the viewer (entered by setting state 37 in a test)
-shows the gallery pictures. Options Plus does not hang with Pepsiman's bit set (a reported hang of American
-copies with a Japanese save is something else).
+(0x060440B0: loads picture 0x0609D7B8 through 0x0602B9AC) and 39 (0x06044104: left/right, 0 to 101; the same
+code in both releases). Pictures 0-79 are the characters' PO_xxx0n.BIN (on the American disc), 80-101
+ZOMAKE00-21.BIN (512x224, 16-bit; only on the Japanese disc). Options Plus is main states 50/51 (0x06032F14,
+0x06033044), cursor row 0x060879EC, rows from a table at 0x06087B24 (x, y, label). Rows 3 (PEPSIMAN RESET:
+clears 0x0200, sets 0x002000E4) and 4 (PORTRAIT: state 37) are whole, labels included; the American program
+skips them in the cursor (cmp/eq #3/#4 at 0x060330CA-0x060330E4), in the drawing (0x060332F2, 0x060332F6) and in
+the drawing's jump table (0x06033352/54: 0x66, the others 0x3E). In Japan the cursor skips neither, PORTRAIT is
+drawn always and PEPSIMAN RESET once he is unlocked. Feature `portrait` (Enhanced, needs the Japanese disc) gives
+row 4's compares -1 and its table entry 0x3E; `pepsiman` does the same for row 3 while his bit is set
+(src/japanese.cpp). The patched code was recorded into the block database, so it runs translated.
 
-Seen on the way, not his: the staff roll after the last match stops on its title (the same frame, Grace or
-Pepsiman, on main's build too), with random input; not looked into.
+Options Plus is the mode menu's eighth entry (count 0x060947B6: 7, or 8 with save byte 0x002000E0 set, which
+finishing arcade mode sets at 0x06026F5C; 9 with 0x06087C19). "Unlock everything" raised only 0x0100 and never
+showed Options Plus; it now raises 0x002000E0 too.
 
+Checked (headless): mode menu → Options Plus → PORTRAIT drawn and reached → A opens the viewer, which steps on;
+with Pepsiman in and unlocked PEPSIMAN RESET is drawn, reached, and A clears his bit (0x87FF → 0x85FF); no
+hang. native_74 as main's with the features off. Not checked by hand: browsing all 102 pictures.
 ## Unlock everything (2026-11-02)
 
 The save file `FVIPER_MAST` (3,088 bytes) is read to 0x00200000 and kept there. 0x00200080 is a word of
