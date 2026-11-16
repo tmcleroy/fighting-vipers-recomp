@@ -33,6 +33,8 @@ void Stop();
 
 enum class State { Stopped, Paused, Playing };
 State GetState();
+// Playing tracks `first` to `last`, as Play was told
+bool IsPlaying(int first, int last);
 int CurrentTrack();
 uint32_t CurrentSector();
 
