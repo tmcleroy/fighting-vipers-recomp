@@ -282,6 +282,7 @@ private:
     void SplitLine(uint32 layer, uint32 row, uint32 *line) const;
     void WidenWindow(std::vector<uint8> &line) const;
     void WidenQuad(Quad &quad) const;
+    void DoubleInterlaceQuad(Quad &quad) const;
     uint32 m_width = 320, m_height = 224;
     uint32 m_backColor = 0;
     uint64_t m_layerPixelsDifferent[6] = {}, m_layerLinesLeftToReference[6] = {}, m_layerLines[6] = {};

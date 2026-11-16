@@ -161,6 +161,8 @@ enum : uint32_t { kPosDefault = 0, kPosSector = 1, kPosTrack = 2, kPosNoChange =
 // Drive states as the library reports them
 enum : uint8_t { kStatusPause = 1, kStatusPlay = 3 };
 
+const char *const kMusicCarriesOn = "music_carries_on";
+
 // CdPlay(what): r4 -> { start position, end position, mode }. Plays from the start of a track to the end of
 // a track (the same one, in the games so far), the low four bits of the mode times more (15: until stopped); or,
 // with "no change" as the start, goes on from where it was paused. Returns 0.
@@ -169,8 +171,12 @@ bool CdPlay(Guest &g) {
     const uint32_t startKind = g.Read32(what), endKind = g.Read32(what + 8);
     const int startTrack = g.Read8(what + 4), endTrack = g.Read8(what + 12);
     const uint8_t mode = g.Read8(what + 16);
-    if (startKind == kPosTrack && music::IsAudioTrack(startTrack)) {
-        music::Play(startTrack, endKind == kPosTrack ? endTrack : startTrack, mode == 0xFF ? 0 : mode & 0xF);
+    const int lastTrack = endKind == kPosTrack ? endTrack : startTrack;
+    if (startKind == kPosTrack && music::IsAudioTrack(startTrack) && satrecomp::FeatureOn(kMusicCarriesOn) &&
+        music::IsPlaying(startTrack, lastTrack)) {
+        // (asked for what is playing already, at a new round: it goes on)
+    } else if (startKind == kPosTrack && music::IsAudioTrack(startTrack)) {
+        music::Play(startTrack, lastTrack, mode == 0xFF ? 0 : mode & 0xF);
     } else if (startKind == kPosNoChange && music::GetState() == music::State::Paused) {
         music::Resume();
     } else {
@@ -446,6 +452,13 @@ void ReportPer() {
 } // namespace
 
 namespace satrecomp::shared {
+
+void MusicCarriesOn() {
+    TheGame().features.push_back({kMusicCarriesOn, "Game", "Music carries on between rounds",
+                                  "The stage's music goes on through the whole fight instead of starting again at every round. "
+                                  "A new fight, or a new stage, starts its music from the beginning as before.",
+                                  kFeatureEnhanced});
+}
 
 const Routine kGfsOpen = {"GFS Open", 0x40, 0xD6F3BEFA9FD2D85Cull, GfsOpen};
 const Routine kGfsStart = {"GFS Start", 0x40, 0x8F991EFB4E2B8472ull, GfsStart};

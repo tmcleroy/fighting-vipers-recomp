@@ -39,6 +39,10 @@ struct Routine {
 extern const Routine kGfsOpen, kGfsStart, kGfsPoll, kGfsClose;
 // The CD library: play audio tracks, pause or stop, report the drive's state (runtime/music.h plays them)
 extern const Routine kCdPlay, kCdSeek, kCdGetCurStat;
+// A feature for games that play their music with kCdPlay: a track asked for while it is already playing goes
+// on from where it is instead of starting again. Sega AM2's fighting games ask for the stage's track at every
+// round, so with it on the music carries on through a fight. Adds the feature to the game's list (game.h).
+void MusicCarriesOn();
 // The peripheral library's SMPC command routine: answers INTBACK (system status and both control pads)
 // from the host's pads, without the chip
 extern const Routine kPerSendCommand;
