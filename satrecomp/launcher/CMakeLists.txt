@@ -40,6 +40,17 @@ if (EXISTS "${GAME_CFG}")
     file(STRINGS "${GAME_CFG}" GAME_COMBOS REGEX "^combos[ \t]*=")
     string(REGEX REPLACE "^combos[ \t]*=[ \t]*" "" GAME_COMBOS "${GAME_COMBOS}")
 endif ()
+# (a second disc of the game whose files the game may read too, game.cfg's `extra_disc_product` and
+# `extra_disc_name`: the launcher looks for it beside the player's disc and starts the game with --extra-disc)
+set(GAME_EXTRA_DISC_PRODUCT "")
+set(GAME_EXTRA_DISC_NAME "")
+if (EXISTS "${GAME_CFG}")
+    file(STRINGS "${GAME_CFG}" GAME_EXTRA_DISC_PRODUCT REGEX "^extra_disc_product[ \t]*=")
+    string(REGEX REPLACE "^extra_disc_product[ \t]*=[ \t]*" "" GAME_EXTRA_DISC_PRODUCT "${GAME_EXTRA_DISC_PRODUCT}")
+    file(STRINGS "${GAME_CFG}" GAME_EXTRA_DISC_NAME REGEX "^extra_disc_name[ \t]*=")
+    string(REGEX REPLACE "^extra_disc_name[ \t]*=[ \t]*" "" GAME_EXTRA_DISC_NAME "${GAME_EXTRA_DISC_NAME}")
+endif ()
 target_compile_definitions(launcher PRIVATE
     LAUNCHER_DISC_NAME="${DISC_NAME}" LAUNCHER_DISC_PRODUCT="${DISC_PRODUCT}" LAUNCHER_DISC_VERSION="${DISC_VERSION}"
-    "SATRECOMP_COMBOS=\"${GAME_COMBOS}\"")
+    "SATRECOMP_COMBOS=\"${GAME_COMBOS}\""
+    "LAUNCHER_EXTRA_DISC_PRODUCT=\"${GAME_EXTRA_DISC_PRODUCT}\"" "LAUNCHER_EXTRA_DISC_NAME=\"${GAME_EXTRA_DISC_NAME}\"")

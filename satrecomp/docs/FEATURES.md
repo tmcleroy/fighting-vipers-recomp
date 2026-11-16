@@ -133,6 +133,19 @@ and says when a training session is on (`Game::inTraining`). Outside one an aid 
 `FeatureValue`), so a readout or a dummy left on does nothing in the game's other modes; the menu still
 shows, and `settings.ini` still keeps, what the player chose (`FeatureSetting`).
 
+**Save unlocks.** `Game::saveUnlocks` names a cheat, the game's save file and fields of it: with the cheat on,
+the backup library gives the game the file with those fields raised (bits set, or a count at least a value)
+and takes out again what it added when the game writes it, so the file kept stays the player's own. A field
+may name a second feature it needs on too (`SaveField::needs`): Fighting Vipers raises Pepsiman's bit only
+while he is in.
+
+**A second disc.** A game may read files from a second disc of the same game that the player has too
+(`--extra-disc PATH`): the game's file loading (`ReadDiscFile`) takes a file from the first disc, and from
+the second only when the first has none of that name. `game.cfg`'s `extra_disc_product` (the product number
+in its header) and `extra_disc_name` let the launcher find it beside the player's disc (in the same folder, or
+a folder in it), say so under the disc, and start the game with it. Only read, like the first. Fighting
+Vipers takes Pepsiman from its Japanese release this way.
+
 **Widescreen in the menu.** The port's feature `widescreen` (the menu's Display page; GPU renderer only)
 switches the wide picture while playing, from the next frame. Its switch is the launcher's own (on its
 first page, so it is left out of `--list-features`: `kFeatureFirstPage`), which says at every start

@@ -13,8 +13,12 @@
 //   screens that list who can be chosen: three in the program, two in the character select's own program
 //   (SELEPROG.BIN, loaded into VDP1's memory at 0x05C78000 and run there). The American ones take the
 //   word with 0x05FF or 0x85FF, the Japanese with 0x07FF or 0xE7FF: the American game leaves Pepsiman out
-//   there and only there. (The Japanese masks also have 0x6000 for Honey's other clothes and not 0x8000,
-//   B.M., whom that release had not yet; here only 0x0200 is added.)
+//   there and only there. (The Japanese versus masks also have 0x6000, which the American game drops too;
+//   its four further Honey slots, 11 to 14, have Honey's own files there and other clothes in the Japanese
+//   program. Here only 0x0200 is added.)
+// - On the character select he is left of Kumachan, left of Grace; in training, in the row of the hidden
+//   characters. His select portrait and profile are in the American SELE.BIN already, and the training's
+//   lessons (CMD_TBL.BIN) have the same rows in both releases, in English here.
 // So with this feature on, the ninth character's file names are the Japanese ones and the five masks take
 // 0x0200 too; the game does the rest as the Japanese one does, and he is unlocked as there (or by "Unlock
 // everything", cheats.cpp). Off, the American game is as it was.
@@ -138,9 +142,9 @@ void PepsimanAfterFrame() {
 
 void RegisterPepsiman() {
     TheGame().features.push_back({kFeature, "Game", "Pepsiman",
-                                  "The Japanese release's extra character, from your Japanese disc (chosen on the launcher's "
-                                  "Game page). He is unlocked as in that release, or by Unlock everything. From the next "
-                                  "character select."});
+                                  "The Japanese release's extra character, from your Japanese disc (keep it in the same folder as "
+                                  "your American disc). Unlocked as in that release, or by Unlock everything; on the character "
+                                  "select, move left from Grace. From the next character select.", kFeatureEnhanced});
     const shared::Routine &original = shared::kAm2LoadFile;
     const shared::Routine loadFile = {original.name, original.size, original.hash, LoadFile};
     shared::Register(loadFile, 0x06029B44);

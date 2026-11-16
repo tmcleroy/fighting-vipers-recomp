@@ -92,6 +92,9 @@ void Stop() {
 State GetState() {
     return g.state;
 }
+bool IsPlaying(int first, int last) {
+    return g.state == State::Playing && g.first == first && g.last == (last < first ? first : last);
+}
 int CurrentTrack() {
     return g.track;
 }

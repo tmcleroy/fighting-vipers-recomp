@@ -194,6 +194,24 @@ static bool ReadFile(const std::string &path, std::vector<uint8_t> &out) {
     return true;
 }
 
+// The disc's files for the game's native file loading: the player's disc, and then a second disc of the game
+// (--extra-disc) for the files that are not on the first (Fighting Vipers' Japanese disc carries a character that
+// the American one does not). Only read, as the first. A second disc that cannot be read is said and left out.
+bool Port::OpenDiscFiles() {
+    if (!discFiles.Open(opt.discPath)) {
+        fprintf(stderr, "Cannot read '%s' as a Saturn disc image\n", opt.discPath.c_str());
+        return false;
+    }
+    haveExtraDisc = !opt.extraDiscPath.empty() && extraDiscFiles.Open(opt.extraDiscPath);
+    if (!opt.extraDiscPath.empty() && !haveExtraDisc) {
+        fprintf(stderr, "Cannot read '%s' as a Saturn disc image (the second disc); going on without it\n", opt.extraDiscPath.c_str());
+    }
+    satrecomp::SetDiscFileReader([this](const std::string &name, std::vector<uint8_t> &data) {
+        return discFiles.Read(name, data) || (haveExtraDisc && extraDiscFiles.Read(name, data));
+    });
+    return true;
+}
+
 #ifndef SATRECOMP_OWN_MACHINE
 // Debugging aid (SATRECOMP_CD_TRACE=1): every CD block command and its response, with the frame number
 struct CDTracer final : ymir::debug::ICDBlockTracer {
@@ -243,16 +261,13 @@ bool Port::Init() {
     sat.configuration.NotifyObservers();
 
     // The disc's files, for starting it and for the game's native file loading
-    if (!discFiles.Open(opt.discPath)) {
-        fprintf(stderr, "Cannot read '%s' as a Saturn disc image\n", opt.discPath.c_str());
+    if (!OpenDiscFiles()) {
         return false;
     }
     satrecomp::music::SetDisc({[this](int track) { return discFiles.AudioSectors(track); },
                                [this](int track, uint32_t sector, uint8_t *out) { return discFiles.ReadAudioSector(track, sector, out); }});
     satrecomp::SetDiscSectorReader([this](uint32_t frameAddress, uint8_t *out) { return discFiles.ReadDataSector(frameAddress, out); });
     satrecomp::SetPadReader([this](int player) { return static_cast<uint16_t>(pad[player & 1].load() & 0xFFF8); });
-    satrecomp::SetDiscFileReader(
-        [this](const std::string &name, std::vector<uint8_t> &data) { return discFiles.Read(name, data); });
 
     if (!opt.biosPath.empty()) {
         std::vector<uint8_t> bios;
@@ -501,16 +516,13 @@ bool Port::Init() {
     satrecomp::LoadFeatures(opt.settingsPath, opt.features + (opt.aspect > 1.34f ? ",widescreen" : ",-widescreen"));
 
     // The disc's files, for starting it and for the game's native file loading
-    if (!discFiles.Open(opt.discPath)) {
-        fprintf(stderr, "Cannot read '%s' as a Saturn disc image\n", opt.discPath.c_str());
+    if (!OpenDiscFiles()) {
         return false;
     }
     satrecomp::music::SetDisc({[this](int track) { return discFiles.AudioSectors(track); },
                                [this](int track, uint32_t sector, uint8_t *out) { return discFiles.ReadAudioSector(track, sector, out); }});
     satrecomp::SetDiscSectorReader([this](uint32_t frameAddress, uint8_t *out) { return discFiles.ReadDataSector(frameAddress, out); });
     satrecomp::SetPadReader([this](int player) { return static_cast<uint16_t>(pad[player & 1].load() & 0xFFF8); });
-    satrecomp::SetDiscFileReader(
-        [this](const std::string &name, std::vector<uint8_t> &data) { return discFiles.Read(name, data); });
     {
         // (what the CD drive's table of contents says)
         satrecomp::machine::Disc disc;
@@ -1252,6 +1264,7 @@ static void Usage(const char *argv0) {
     fprintf(stderr,
             "Usage: %s --disc GAME.cue [options]\n"
             "  --bios BIOS.bin        start through a Saturn BIOS image instead of the native BIOS\n"
+            "  --extra-disc GAME.cue  another disc of the game: files not on --disc are read from it\n"
             "  --backup PATH          internal backup memory image (saves)\n"
             "  --cpu MODE             native (default) | free | recomp | interp | pure\n"
             "                         native: satrecomp's own translation of the game code, free running\n"
@@ -1298,6 +1311,8 @@ int main(int argc, char **argv) {
             o.biosPath = next();
         } else if (a == "--disc") {
             o.discPath = next();
+        } else if (a == "--extra-disc") {
+            o.extraDiscPath = next();
         } else if (a == "--backup") {
             o.backupPath = next();
         } else if (a == "--cpu") {

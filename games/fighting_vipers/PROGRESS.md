@@ -2,6 +2,35 @@
 
 Disc: Fighting Vipers (USA), MK-81041 V2.000 (17 tracks: data + CD audio).
 
+## Pepsiman from the Japanese disc (2026-11-16)
+
+The Japanese release (GS-9101 V1.013; Redump "Fighting Vipers (Japan) (Rev C)") has one more fighter, Pepsiman.
+Compared with ours (MK-81041 V2.000): the same program. Its file tables (names at 0x06085CAC on, 20 bytes each,
+seventeen characters per table) give Pepsiman (character 9) Tokio's files in the American program; the American
+disc has none of his. The unlock bit 0x0200 of 0x00200080 is set and cleared by the same code (0x0601D2E4,
+0x060331DA); five masks of that word leave him out of the screens: 0x060381F6, 0x060401A6 (0x85FF), 0x06041F4C
+(0x05FF) in the program, +0x1F5C (0x05FF) and +0x1F5E (0x85FF, versus) in SELEPROG.BIN, which is loaded to
+0x05C78000 (VDP1's memory) and runs there. The Japanese ones are 0x07FF and 0xE7FF. His select portrait and
+profile are in the American SELE.BIN; CMD_TBL.BIN (training's lessons) has the same 685 rows in both.
+
+Feature `pepsiman` (src/pepsiman.cpp, Enhanced): the ninth character's names (and the twelfth's portraits, as the
+Japanese program has them) set to his, the five masks given 0x0200; the select program's at its load (LoadFile
+is pepsiman.cpp's, the shared one plus that). His files come from the player's Japanese disc: satrecomp's
+`--extra-disc`, which the launcher finds beside the American disc (game.cfg `extra_disc_product`). Without that
+disc the feature does nothing. "Unlock everything" raises his bit only with the feature on.
+
+Checked (headless): on the select screen two left of Grace (arcade, versus) and in training's hidden row; an
+arcade run through all eight stages and B.M. ("PEPSIMAN VS B.M." screen) to the staff roll; training with the aids
+(frame data, hit overlay, throws, damage readout); the records screen lists him; 99.90% of block runs translated
+and nothing interpreted in his fights, as with Grace. With the feature off, or on without his disc, native_74's
+state hash is the same as before every frame of 12,000; with unlock_all on and Pepsiman off, the same for
+6,000. Not checked by hand: playing him, his sounds, his win poses up close, his ending in a window.
+Not taken over: the Japanese release's further Honey clothes (characters 11-14: MPAI/MNHO/MEHO/MSHO, mask bits
+0x6000) and its picture gallery (ZOMAKE00-21.BIN, 22 pictures of 512x224 the American program still names).
+
+Seen on the way, not his: the staff roll after the last match stops on its title (the same frame, Grace or
+Pepsiman, on main's build too), with random input; not looked into.
+
 ## Unlock everything (2026-11-02)
 
 The save file `FVIPER_MAST` (3,088 bytes) is read to 0x00200000 and kept there. 0x00200080 is a word of

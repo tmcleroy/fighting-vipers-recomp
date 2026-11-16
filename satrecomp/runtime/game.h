@@ -56,6 +56,7 @@ struct SaveField {
         kAtLeast, // a count, at least this
     } kind;
     uint32_t value;
+    const char *needs = nullptr; // another feature that must be on too for this field (nullptr: none)
 };
 struct SaveUnlocks {
     const char *feature = nullptr; // the cheat's feature (FeatureOn)

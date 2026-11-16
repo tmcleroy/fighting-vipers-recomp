@@ -49,6 +49,7 @@ enum PadButton : uint16_t {
 struct Options {
     std::string biosPath;
     std::string discPath;
+    std::string extraDiscPath; // another disc of the game: files not on discPath are read from it (optional)
     std::string backupPath;   // internal backup memory image (created when missing)
     std::string moviePlay;    // input movie to replay
     std::string movieRecord;  // input movie to write
@@ -113,6 +114,9 @@ struct Port {
     bool temporaryBackup = false;
     uint64_t audioHash = 0xcbf29ce484222325ull; // of every sound sample so far
     DiscFiles discFiles;
+    DiscFiles extraDiscFiles; // (--extra-disc: open when one was given and could be read)
+    bool haveExtraDisc = false;
+    bool OpenDiscFiles();
     satrecomp::video::YmirAdapter *videoAdapter = nullptr; // (owned by the video hardware)
     satrecomp::video::Renderer *videoRenderer = nullptr;   // (the adapter's)
     // Drawing by the GPU (video/gpu.h), when that is how the picture is made
