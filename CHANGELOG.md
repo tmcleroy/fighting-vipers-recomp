@@ -5,7 +5,7 @@
 - The winner's close-up after a fight: the winner was drawn mostly off the bottom of the screen. The game draws
   that shot in double interlace (twice the lines), which the GPU renderer drew at twice its height; it is drawn
   at its height now, as the software renderer and the Saturn draw it.
-- Toolkit at satrecomp 6e6ecfc (also: the shared `shared::MusicCarriesOn` option, which this game does not use).
+- Toolkit at satrecomp 433f324 (also: the shared `shared::MusicCarriesOn` option, which this game does not use).
 
 ## 0.1.0-beta.4
 
