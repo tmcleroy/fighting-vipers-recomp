@@ -91,6 +91,10 @@ public:
     void SetWideSplits(std::vector<WideSplit> splits) {
         m_wideSplits = std::move(splits);
     }
+    // Whether the splits apply to the frame about to be drawn (the game says, frame by frame: Game::wideSplitsOn)
+    void SetWideSplitsOn(bool on) {
+        m_wideSplitsOn = on;
+    }
     void SetGpuFloor(bool on) {
         m_gpuFloor = on;
     }
@@ -279,6 +283,7 @@ private:
         return m_width + 2 * WideDots();
     }
     std::vector<WideSplit> m_wideSplits;
+    bool m_wideSplitsOn = true;
     void SplitLine(uint32 layer, uint32 row, uint32 *line) const;
     void WidenWindow(std::vector<uint8> &line) const;
     void WidenQuad(Quad &quad) const;

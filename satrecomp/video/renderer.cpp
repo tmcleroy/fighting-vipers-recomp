@@ -694,6 +694,9 @@ void Renderer::GpuRow(uint32 row, uint32 y, bool otherField) {
 // Widescreen: a line of a scroll screen whose left and right parts belong at the picture's edges
 void Renderer::SplitLine(uint32 layer, uint32 row, uint32 *line) const {
     const uint32 extra = WideDots(), width = LineWidth();
+    if (!m_wideSplitsOn) {
+        return;
+    }
     for (const WideSplit &split : m_wideSplits) {
         if (split.layer != layer || row < split.rowFrom || row >= split.rowTo) {
             continue;

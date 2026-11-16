@@ -58,6 +58,7 @@ struct OpenFile {
     bool open = false;
 };
 std::vector<OpenFile> g_files;
+bool (*g_onlyLooks)(Guest &g) = nullptr; // (PollOnlyLooks)
 
 OpenFile *FileOf(uint32_t handle) {
     const uint32_t index = handle - kHandleBase;
@@ -128,7 +129,10 @@ bool GfsPoll(Guest &g) {
     uint32_t state = kIdle;
     if (file && file->open) {
         state = file->state;
-        if (state == kComplete) {
+        // (a "complete" is given once, and the file is done with; but not to a routine that only looks, which
+        // would take it from the one waiting for it: PollOnlyLooks)
+        const bool looks = g_onlyLooks && g_onlyLooks(g);
+        if (state == kComplete && !looks) {
             *file = OpenFile{};
         }
     }
@@ -452,6 +456,10 @@ void ReportPer() {
 } // namespace
 
 namespace satrecomp::shared {
+
+void PollOnlyLooks(bool (*onlyLooks)(Guest &g)) {
+    g_onlyLooks = onlyLooks;
+}
 
 void MusicCarriesOn() {
     TheGame().features.push_back({kMusicCarriesOn, "Game", "Music carries on between rounds",

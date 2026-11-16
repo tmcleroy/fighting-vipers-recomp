@@ -37,6 +37,11 @@ struct Routine {
 // samples through it: done at once, their sound effects stopped after the first in a fight. The game's own
 // Fread reads through the CD drive, satrecomp/machine/cd.cpp.)
 extern const Routine kGfsOpen, kGfsStart, kGfsPoll, kGfsClose;
+// kGfsPoll gives a file's "complete" once, and is then done with the file. A game may also ask after the same file
+// where it only looks (Fighting Vipers, every frame), which would take the "complete" from the routine waiting for
+// it: a poll for which this says true (from the registers and the stack as kGfsPoll is entered) looks without
+// taking it.
+void PollOnlyLooks(bool (*onlyLooks)(Guest &g));
 // The CD library: play audio tracks, pause or stop, report the drive's state (runtime/music.h plays them)
 extern const Routine kCdPlay, kCdSeek, kCdGetCurStat;
 // A feature for games that play their music with kCdPlay: a track asked for while it is already playing goes
