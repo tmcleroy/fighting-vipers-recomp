@@ -60,7 +60,27 @@ void Renderer::Vdp1AddQuad(const Command &cmd, const int corners[4][2], uint16 f
         lines = std::max({lines, std::abs(corners[3 - i][0] - corners[i][0]), std::abs(corners[3 - i][1] - corners[i][1])});
     }
     quad.lines = static_cast<uint16>(std::min(lines + 1, 0x3FFF));
+    DoubleInterlaceQuad(quad);
     WidenQuad(quad);
+}
+
+// Double interlace (FBCR's DIE, with the VDP2 showing a double-density picture): the game draws a picture of
+// twice the framebuffer's lines (its coordinates, clipping and local origin are in those lines), and the
+// hardware writes only the lines of one field, each to the framebuffer line y / 2 (Fighters Megamix's winner
+// close-up). The GPU's sprite layer has the framebuffer's lines, and draws both fields at once: everything
+// is halved down. (Unhalved, the picture came out twice as tall, from its top: the winner's head at the
+// bottom of the screen.)
+void Renderer::DoubleInterlaceQuad(Quad &quad) const {
+    if (!m_regs1.dblInterlaceEnable || m_regs2.TVMD.LSMDn != InterlaceMode::DoubleDensity) {
+        return;
+    }
+    for (auto &corner : quad.corner) {
+        corner[1] *= 0.5f;
+    }
+    quad.clip[1] *= 0.5f;
+    quad.clip[3] *= 0.5f;
+    quad.clipOut[1] *= 0.5f;
+    quad.clipOut[3] *= 0.5f;
 }
 
 // Widescreen: the drawing area has more columns on both sides. Everything moves right by that much, and
@@ -107,6 +127,7 @@ void Renderer::Vdp1AddLine(const Command &cmd, const int from[2], const int to[2
     quad.corner[3][1] = ay + ny;
     const uint16 gouraud[4] = {gouraudFrom, gouraudTo, gouraudTo, gouraudFrom};
     Vdp1FinishQuad(quad, cmd, kQuadFlat, gouraud);
+    DoubleInterlaceQuad(quad);
     WidenQuad(quad);
 }
 
