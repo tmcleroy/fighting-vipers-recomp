@@ -16,6 +16,13 @@
   a gallery of 22 more from the same disc; with Pepsiman unlocked, Options Plus's PEPSIMAN RESET row too.
 - Unlock everything now shows Options Plus on the title's menu, as it said it did (the menu shows it only after
   arcade mode is finished, which the cheat did not count).
+- The in-game menu as in the other ports: training mode's aids under Alternative modes → Training mode, the
+  dummy's choices on a Dummy page under it, and Reset game at the bottom (the game starts again as when switched
+  on; your saves are kept).
+- Honey's clothes in arcade mode too.
+- Widescreen: the training character select (its top row of faces cut apart, a purple bar showing through), the
+  training's SELECT CPU TYPE and its display at the top were cut apart by the fight's gauge layout; that layout
+  is now used in fights only, and not in training. Toolkit at satrecomp (menu pages, Reset game, wideSplitsOn).
 
 ## 0.1.0-beta.4
 
