@@ -28,6 +28,15 @@ games' features handed over.
 Test hook: `--menu FRAME:KEYS[:shot.png]` opens it at that frame and presses (u d l r a s), headless. A run that
 chooses "Quit game" this way ends there.
 
+**Pages.** A game may give the menu pages beyond its categories (`Game::pages`: a name, the page it is under, a
+line saying what it is): those with no parent head the first page, in a group of their own, and the others are
+reached from their parent's page, before its features. A category's features are on the page of its name. As in
+the other ports: "Alternative modes" with "Training mode" under it and "Dummy" under that (Fighting Vipers).
+
+**Reset game.** The menu's last group has Reset game above Quit and Resume: the port keeps a state taken before
+the game's first frame and goes back to it, so the game starts again as when it was switched on. The save memory
+is not part of a state, so the player's saves are as they were.
+
 ## Save states
 
 The whole game as it is between two frames, to a file and back (`runtime/state.h`: every part describes its
@@ -295,7 +304,9 @@ renderer; with the GPU renderer as one picture of at most 720 lines that the GPU
 
 The launcher's switch (`--widescreen`), or the menu's Display page while playing (above). See docs/VIDEO.md. What of a game's 2D display belongs at the picture's edges is the game's knowledge too
 (`Game::wideSplits`; Fighting Vipers: `games/fighting_vipers/src/widescreen.cpp`, the gauges and names move
-out to the edges, the timer and messages stay in the middle).
+out to the edges, the timer and messages stay in the middle). A game says frame by frame whether its splits
+apply (`Game::wideSplitsOn`): the same rows of the same layer hold other screens too (Fighting Vipers' character
+select, its training display), which the splits would cut apart.
 
 ## The Display page
 

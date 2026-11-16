@@ -15,6 +15,7 @@
 // shared::WidenAm2PanelLimits, which Fighters Megamix uses too). It is one word next to each routine's code,
 // used for both directions; down, panels that far off the picture are then listed too, which shows only
 // when the camera is right at the cage.
+#include "fv.h"
 #include "game.h"
 #include "shared_lifts.h"
 
@@ -27,7 +28,19 @@ void WidescreenAfterFrame() {
     shared::WidenAm2PanelLimits({0x06022D88, 0x06022E94});
 }
 
+// The splits are the fight's display's, and are made only while it is up: in a fight (main state 8), and not in
+// training mode, whose display is laid out otherwise (DAMAGE, a scale across the top, TRAINING MODE in the middle:
+// the splits cut through them) and whose start has SELECT CPU TYPE on the same rows. Elsewhere NBG2's rows hold
+// other screens (the character select's top row of faces, menus), which the splits cut apart and opened a gap in.
+bool FightDisplayUp() {
+    constexpr uint32_t kMainState = 0x06090760;
+    constexpr uint32_t kMainFight = 8;
+    const uint8_t *mode = Ram(fv::kGameMode);
+    return Ram32(kMainState) == kMainFight && !(mode && *mode == fv::kModeTraining);
+}
+
 void RegisterWidescreen() {
+    TheGame().wideSplitsOn = FightDisplayUp;
     constexpr uint32_t kNBG2 = 2;
     TheGame().wideSplits = {
         // rows of the 448-line picture; columns: where the left player's gauge ends and the right one's begins

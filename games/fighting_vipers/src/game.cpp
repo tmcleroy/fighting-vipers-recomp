@@ -35,6 +35,13 @@ void RegisterShared() {
     Register(kGfsStart, 0x06045020);
     Register(kGfsPoll, 0x06045394);
     Register(kGfsClose, 0x06045308);
+    // The routine 0x0602B7AC asks after the file being streamed (the library's answer returns to 0x0602B7BC). A
+    // loading routine waits on it, but the frame loop also calls it every frame (its jsr at 0x0602263E, returning to
+    // 0x06022642) and throws the answer away. When the frame loop asked first, it took the one "complete" that the
+    // stream was waiting for: the credits after the last match stream a file this way (MOT_BAH.BIN) and waited
+    // forever. The frame loop's asking only looks. (0x0602B7AC keeps the frame loop's return address on top of
+    // the stack, under r8.)
+    PollOnlyLooks([](Guest &g) { return g.PR() == 0x0602B7BC && g.Read32(g.R(15)) == 0x06022642; });
     Register(kCdPlay, 0x0604490C);
     Register(kCdSeek, 0x060449D0);
     Register(kCdGetCurStat, 0x06044384);

@@ -197,6 +197,13 @@ static bool ReadFile(const std::string &path, std::vector<uint8_t> &out) {
 // The disc's files for the game's native file loading: the player's disc, and then a second disc of the game
 // (--extra-disc) for the files that are not on the first (Fighting Vipers' Japanese disc carries a character that
 // the American one does not). Only read, as the first. A second disc that cannot be read is said and left out.
+// Widescreen: the game's splits for the frame about to run (Game::wideSplitsOn)
+void Port::SetWideSplitsOn() {
+    if (videoRenderer) {
+        videoRenderer->SetWideSplitsOn(!satrecomp::TheGame().wideSplitsOn || satrecomp::TheGame().wideSplitsOn());
+    }
+}
+
 bool Port::OpenDiscFiles() {
     if (!discFiles.Open(opt.discPath)) {
         fprintf(stderr, "Cannot read '%s' as a Saturn disc image\n", opt.discPath.c_str());
@@ -807,6 +814,12 @@ void Port::RunFrame() {
     if (gpu && satrecomp::FeatureOn("widescreen") != wideShown) {
         ApplyWidescreen(!wideShown);
     }
+#ifdef SATRECOMP_OWN_MACHINE
+    if (frame == 0 && powerOn.empty()) {
+        SaveStateData(powerOn);
+    }
+#endif
+    SetWideSplitsOn();
     saturn->RunFrame();
     frame++;
     if (satrecomp::TheGame().frame) {
@@ -866,7 +879,8 @@ void Port::MenuAct(Menu::Action action) {
     const bool ok = action == Menu::Action::Save             ? SaveState(path, error)
                     : action == Menu::Action::Load           ? LoadState(path, error)
                     : action == Menu::Action::SetResetPoint  ? SetResetPoint(error)
-                                                             : GoToResetPoint(error);
+                    : action == Menu::Action::GoToResetPoint ? GoToResetPoint(error)
+                                                             : ResetGame(error);
     if (ok) {
         menu.Close();
     } else {
@@ -934,6 +948,7 @@ void Port::RunAhead() {
     }
     satrecomp::SetRunningAhead(true); // (no sound comes out of them: Init, onSample)
     for (int n = 0; n < ahead; n++) {
+        SetWideSplitsOn();
         saturn->RunFrame();
         if (satrecomp::TheGame().frame) {
             satrecomp::TheGame().frame();
@@ -979,6 +994,13 @@ void Port::SaveStateData(std::vector<uint8_t> &data) {
 bool Port::SetResetPoint(std::string &) {
     SaveStateData(resetPoint);
     return true;
+}
+bool Port::ResetGame(std::string &error) {
+    if (powerOn.empty()) {
+        error = "The game cannot be reset yet.";
+        return false;
+    }
+    return LoadStateData(powerOn, error);
 }
 bool Port::GoToResetPoint(std::string &error) {
     if (resetPoint.empty()) {
@@ -1061,6 +1083,10 @@ bool Port::SetResetPoint(std::string &error) {
     return false;
 }
 bool Port::GoToResetPoint(std::string &error) {
+    error = "The reference build has no save states.";
+    return false;
+}
+bool Port::ResetGame(std::string &error) {
     error = "The reference build has no save states.";
     return false;
 }

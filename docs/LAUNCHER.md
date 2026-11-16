@@ -61,9 +61,10 @@ kick**: buttons pressed together, held as one. They have no key or button until 
 
 ![The menu while playing: save states, the features' pages, speed, the reset point](screenshots/menu.jpg)
 
-The **in-game menu** stops the game while it is open: save and load a state (nine slots), a page for each
-kind of feature, the speed, the reset point, and **Quit game**, which is how you leave (Esc only closes the
-menu). Up and down choose a row; A, B, C or Start change it or go into a page; left and right change a row
+The **in-game menu** stops the game while it is open: **Alternative modes** (training mode's aids, and the
+dummy's page under them), save and load a state (nine slots), a page for each kind of feature, the speed, the
+reset point, **Reset game** (the game starts again as when switched on; your saves are kept) and **Quit game**,
+which is how you leave (Esc only closes the menu). Up and down choose a row; A, B, C or Start change it or go into a page; left and right change a row
 with several values and leave a page.
 
 ## Updates

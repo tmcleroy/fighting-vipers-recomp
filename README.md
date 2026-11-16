@@ -54,7 +54,7 @@ stay off in the other modes.
 - **Pepsiman**, the Japanese release's hidden extra fighter, in the American game: keep your Japanese disc image
   in the same folder as the American one and the game takes his files from it. He is unlocked as in Japan (or
   with "unlock everything"), left of Grace on the character select. From the same disc, **Honey's other clothes**
-  (Aloha, Uniform and two more) in versus, team battle and training, and Options Plus's **Portrait** gallery.
+  (Aloha, Uniform and two more), and Options Plus's **Portrait** gallery.
 - **Save states**: nine slots, from the menu or F5 / F9 ([keys](docs/LAUNCHER.md#keys-while-playing)).
 - **Run-ahead**: what you press seen a frame or two sooner, the game running exactly as without it
   ([more](docs/LAUNCHER.md#run-ahead)).

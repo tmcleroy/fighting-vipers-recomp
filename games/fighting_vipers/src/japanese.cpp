@@ -177,6 +177,43 @@ int HoneyClothes() {
     return g_haveClothes == 1 ? chosen : 0;
 }
 
+// The table of pictures (0x060867B0: five a character, 20 bytes a name; the arcade's ending and the Portrait
+// viewer show them) has Pandachan's at character 11 and Tokio's (Pepsiman's with him in) at 12, and Honey's at 13
+// and 14. While Honey wears other clothes in arcade mode, 11 and 12 show Honey's own pictures; they are put back
+// as they were after, so that the viewer has them as before.
+constexpr uint32_t kPictures = 0x060867B0, kPicturesPerCharacter = 5;
+std::vector<std::string> g_picturesKept; // (11's and 12's names while they show Honey's)
+
+void SetHoneyPictures(bool honeys) {
+    auto at = [](uint32_t character, uint32_t n) { return kPictures + (character * kPicturesPerCharacter + n) * kNameSize; };
+    auto name = [](uint32_t address) {
+        const uint8_t *p = Ram(address);
+        return p ? std::string(reinterpret_cast<const char *>(p), strnlen(reinterpret_cast<const char *>(p), kNameSize)) : std::string();
+    };
+    auto put = [](uint32_t address, const std::string &text) {
+        if (uint8_t *p = Ram(address); p && text.size() < kNameSize) {
+            std::memset(p, 0, kNameSize);
+            std::memcpy(p, text.data(), text.size());
+        }
+    };
+    if (honeys && g_picturesKept.empty()) {
+        for (uint32_t character : {11u, 12u}) {
+            for (uint32_t n = 0; n < kPicturesPerCharacter; n++) {
+                g_picturesKept.push_back(name(at(character, n)));
+                put(at(character, n), name(at(kHoneyCharacter, n)));
+            }
+        }
+    } else if (!honeys && !g_picturesKept.empty()) {
+        size_t i = 0;
+        for (uint32_t character : {11u, 12u}) {
+            for (uint32_t n = 0; n < kPicturesPerCharacter; n++) {
+                put(at(character, n), g_picturesKept[i++]);
+            }
+        }
+        g_picturesKept.clear();
+    }
+}
+
 void SetHoneyClothes(int chosen) {
     for (int i = 0; i < 4; i++) {
         const Clothes &c = chosen ? kClothes[i] : kHoney;
@@ -189,10 +226,11 @@ void SetHoneyClothes(int chosen) {
         SetName(kMotions + at, c.motion, {other.motion});
         SetName(kWins + at, c.win, {other.win});
     }
-    // (as in the Japanese game, only in versus, team battle and training: the arcade's endings would take
-    // the twelfth character's pictures, which are Pepsiman's)
+    // (the Japanese game has them in versus, team battle and training; here in arcade too, where the ending
+    // shows the pictures of the character's place in the table of pictures: Honey's own, see SetHoneyPictures)
     const uint8_t mode = Ram(fv::kGameMode) ? *Ram(fv::kGameMode) : 0;
-    if (mode != fv::kModeVersus && mode != fv::kModeTeam && mode != fv::kModeTraining) {
+    SetHoneyPictures(chosen != 0 && mode == fv::kModeArcade);
+    if (mode != fv::kModeArcade && mode != fv::kModeVersus && mode != fv::kModeTeam && mode != fv::kModeTraining) {
         return;
     }
     for (uint32_t player = 0; player < 2; player++) {
@@ -303,8 +341,8 @@ void RegisterJapanese() {
                                   "select, move left from Grace. From the next character select.", kFeatureEnhanced});
     TheGame().features.push_back({kHoneyFeature, "Game", "Honey's clothes",
                                   "The other clothes the Japanese release gives Honey (Candy), from your Japanese disc (keep it in "
-                                  "the same folder as your American disc). In versus, team battle and training, as there; every "
-                                  "Honey chosen wears them. From her next fight.",
+                                  "the same folder as your American disc). Every Honey chosen wears them, in arcade, versus, team "
+                                  "battle and training. From her next fight.",
                                   0, {"Her own", "Pink", "White ribbon", "Uniform", "Aloha (with a ukulele attack)"}});
     TheGame().features.push_back({kPortraitFeature, "Game", "Portrait in Options Plus",
                                   "The Japanese release's picture viewer, back in Options Plus: the characters' pictures and the "

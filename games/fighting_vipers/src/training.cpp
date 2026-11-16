@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-only
 // Copyright (C) 2026 Tommy McLeroy. Part of Fighting Vipers Recomp: https://github.com/tmcleroy/fighting-vipers-recomp
-// Fighting Vipers: training aids (optional features in the category "Training"; the launcher's Features page
+// Fighting Vipers: training aids (optional features in the category "Training mode"; the launcher's Features page
 // and the in-game menu switch them).
 //
 //   Damage readout   by each gauge, what the last hit took off it, and for a combo the number of hits and
@@ -1307,6 +1307,10 @@ void Frame(satrecomp::Guest &g, bool paused) {
 
 namespace satrecomp {
 
+namespace {
+constexpr const char *kTrainingPage = "Training mode";
+} // namespace
+
 // After every frame the game ran
 void TrainingAfterFrame() {
     using namespace fv::training;
@@ -1335,33 +1339,33 @@ void TrainingState(Archive &ar) {
 
 void RegisterTraining() {
     Game &game = TheGame();
-    game.features.push_back({"damage_readout", "Training", "Damage readout",
+    game.features.push_back({"damage_readout", kTrainingPage, "Damage readout",
                              "Shows by each gauge what the last hit took off it, and for hits in a row their number and what they took together."});
-    game.features.push_back({"input_display", "Training", "Input display",
+    game.features.push_back({"input_display", kTrainingPage, "Input display",
                              "Shows each fighter's last inputs down the side, with the frames each was held: the direction as a number pad's digit (6 forward, 2 down, 5 none...), then G, P, K."});
-    game.features.push_back({"gauge_refill", "Training", "Gauges refill", "A gauge is whole again a moment after its fighter was last hit."});
-    game.features.push_back({"frame_data", "Training", "Frame data",
+    game.features.push_back({"gauge_refill", kTrainingPage, "Gauges refill", "A gauge is whole again a moment after its fighter was last hit."});
+    game.features.push_back({"frame_data", kTrainingPage, "Frame data",
                              "After a move hits or is guarded, shows the frame it hit on and how many frames sooner (+) or later (-) than the other its fighter can act again."});
-    game.features.push_back({"move_data", "Training", "Move data",
+    game.features.push_back({"move_data", kTrainingPage, "Move data",
                              "Shows the last attack's level, the frame it first hits on, the frames it can hit for and those to recover, its damage, and how far ahead it "
                              "leaves you on hit and on guard. Every move done is written to moves-<character>.csv beside the settings."});
-    game.features.push_back({"move_log", "Training", "Move log",
+    game.features.push_back({"move_log", kTrainingPage, "Move log",
                              "Writes every move done to frame_data.csv beside the settings, a line each: what was pressed for it, its "
                              "frames, what came of it, how far ahead it left you, its damage."});
-    game.features.push_back({"throw_range", "Training", "Throw range",
+    game.features.push_back({"throw_range", kTrainingPage, "Throw range",
                              "Marks each fighter's throw reach on the ground, lit while the game would let the throw happen, with the distance and what is in the way."});
-    game.features.push_back({"dummy_struggle", "Training", "Dummy struggles in throws",
+    game.features.push_back({"dummy_struggle", "Dummy", "Dummy struggles in throws",
                              "Thrown, the opponent presses the buttons all the while: enough presses and it breaks out of the throw unhurt. "
                              "At random: in a throw in two, as chance has it.",
                              0, {"Off", "Always", "At random"}});
-    game.features.push_back({"dummy_answers_sometimes", "Training", "Dummy answers now and then",
+    game.features.push_back({"dummy_answers_sometimes", "Dummy", "Dummy answers now and then",
                              "The opponent counters (Dummy counter) and does what it does as it gets up (Dummy wake-up) only one time in "
                              "two, by chance, so you cannot learn when it will."});
-    game.features.push_back({"hit_overlay", "Training", "Hit overlay",
+    game.features.push_back({"hit_overlay", kTrainingPage, "Hit overlay",
                              "Lays what the game tests for hits over the fighters: each body as 22 balls. Outlined: can be hit (grey: not now). Red: attacking. Yellow: touched by an attack."});
-    game.features.push_back({"hit_view", "Training", "Hit view",
+    game.features.push_back({"hit_view", kTrainingPage, "Hit view",
                              "A side view of what the game tests for hits: each body as 22 balls. Outlined: can be hit (grey: not now). Red: attacking. Yellow: touched by an attack."});
-    game.features.push_back({"armour_readout", "Training", "Armour readout", "Shows by each gauge what is left of the upper and the lower armour, or OFF."});
+    game.features.push_back({"armour_readout", kTrainingPage, "Armour readout", "Shows by each gauge what is left of the upper and the lower armour, or OFF."});
     game.features.push_back({"armour_keep", "Armour", "Armour stays on", "Nobody's armour takes damage or comes off; armour that is off is put back.", kFeatureExclusive});
     game.features.push_back({"armour_off_dummy", "Armour", "Opponent without armour", "The opponent's armour is off.", kFeatureExclusive});
     game.features.push_back({"armour_off_both", "Armour", "Nobody has armour", "Both fighters' armour is off.", kFeatureExclusive});
@@ -1430,13 +1434,22 @@ void RegisterTraining() {
     // The training aids work in the game's own training mode only (TRAINING MODE in its main menu); elsewhere
     // they do nothing, and keep what the player chose for when it next is. (The Armour choices change the game,
     // as the cheats do, and work anywhere.)
+    // The menu's pages, as in the other ports: Alternative modes at the head of the menu, Training mode under it,
+    // the dummy's page under that, and the dummy's answers under the dummy's
+    game.pages.push_back({"Alternative modes", "", "Other ways to play: training mode, and its aids."});
+    game.pages.push_back({kTrainingPage, "Alternative modes",
+                          "The aids for the game's own TRAINING MODE (on its main menu): they work there and stay off elsewhere."});
+    game.pages.push_back({"Dummy", kTrainingPage, "What the opponent does in a training session."});
+    game.pages.push_back({"Dummy counter", "Dummy", "The move the dummy counters with."});
+    game.pages.push_back({"Dummy recovery", "Dummy", "What the dummy does when it is knocked down."});
+    game.pages.push_back({"Dummy wake-up", "Dummy", "What the dummy does as it gets up."});
     game.inTraining = [] {
         const uint8_t *mode = Ram(fv::kGameMode);
         return mode && *mode == fv::kModeTraining;
     };
     for (Feature &feature : game.features) {
         const std::string category = feature.category;
-        if (category == "Training" || category.rfind("Dummy", 0) == 0) {
+        if (category == kTrainingPage || category.rfind("Dummy", 0) == 0) {
             feature.flags |= kFeatureTraining;
         }
     }
