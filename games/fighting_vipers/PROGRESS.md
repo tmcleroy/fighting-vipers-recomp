@@ -13,9 +13,9 @@ disc has none of his. The unlock bit 0x0200 of 0x00200080 is set and cleared by 
 0x05C78000 (VDP1's memory) and runs there. The Japanese ones are 0x07FF and 0xE7FF. His select portrait and
 profile are in the American SELE.BIN; CMD_TBL.BIN (training's lessons) has the same 685 rows in both.
 
-Feature `pepsiman` (src/pepsiman.cpp, Enhanced): the ninth character's names (and the twelfth's portraits, as the
+Feature `pepsiman` (src/japanese.cpp, Enhanced): the ninth character's names (and the twelfth's portraits, as the
 Japanese program has them) set to his, the five masks given 0x0200; the select program's at its load (LoadFile
-is pepsiman.cpp's, the shared one plus that). His files come from the player's Japanese disc: satrecomp's
+is japanese.cpp's, the shared one plus that). His files come from the player's Japanese disc: satrecomp's
 `--extra-disc`, which the launcher finds beside the American disc (game.cfg `extra_disc_product`). Without that
 disc the feature does nothing. "Unlock everything" raises his bit only with the feature on.
 

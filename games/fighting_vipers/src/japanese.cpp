@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-only
 // Copyright (C) 2026 Tommy McLeroy. Part of Fighting Vipers Recomp: https://github.com/tmcleroy/fighting-vipers-recomp
-// Pepsiman, the Japanese release's extra character, in the American game: his files come from the player's
-// Japanese disc (the port's --extra-disc), nothing of his is in this repository.
+// What the Japanese release has that the American one left out, from the player's Japanese disc (the port's
+// --extra-disc; nothing of it is in this repository): Pepsiman, and Honey's other clothes.
+//
+// PEPSIMAN
 //
 // What the two releases have, found by comparing them (the American MK-81041 V2.000, the Japanese GS-9101
 // V1.013):
@@ -27,6 +29,7 @@
 #include "shared_lifts.h"
 
 #include <cstring>
+#include <initializer_list>
 #include <string>
 #include <vector>
 
@@ -92,27 +95,105 @@ uint16_t MaskWord(uint16_t now, const Mask &m, bool on) {
     return on ? static_cast<uint16_t>(m.american | kPepsiman) : m.american;
 }
 
+// Sets an entry of the file tables to `want`, if it now holds one of `known` (else it is not the table there,
+// and is left alone)
+void SetName(uint32_t at, const char *want, std::initializer_list<const char *> known) {
+    uint8_t *p = Ram(at);
+    if (!p || std::strncmp(reinterpret_cast<const char *>(p), want, kNameSize) == 0) {
+        return;
+    }
+    for (const char *name : known) {
+        if (std::strncmp(reinterpret_cast<const char *>(p), name, kNameSize) == 0) {
+            std::memset(p, 0, kNameSize);
+            std::memcpy(p, want, std::strlen(want));
+            return;
+        }
+    }
+}
+
 // After every frame: the program's tables and masks as the feature says (a state loaded, or the feature
 // switched in the menu, may have left them the other way)
 void SetProgram(bool on) {
     for (const Name &n : kNames) {
-        uint8_t *p = Ram(n.at);
-        if (!p) {
-            continue;
-        }
-        const char *want = on ? n.japanese : n.american;
-        const char *other = on ? n.american : n.japanese;
-        if (std::strncmp(reinterpret_cast<const char *>(p), want, kNameSize) == 0 ||
-            std::strncmp(reinterpret_cast<const char *>(p), other, kNameSize) != 0) {
-            continue; // (as wanted, or not the table: left alone)
-        }
-        std::memset(p, 0, kNameSize);
-        std::memcpy(p, want, std::strlen(want));
+        SetName(n.at, on ? n.japanese : n.american, {n.american, n.japanese});
     }
     for (const Mask &m : kProgramMasks) {
         if (const uint16_t want = MaskWord(Ram16(m.at), m, on); want) {
             SetRam16(m.at, want);
         }
+    }
+}
+
+// HONEY'S CLOTHES
+//
+// The file tables' characters 11 to 14 are Honey in other clothes in the Japanese program (and Honey as she is
+// in the American one, whose disc has none of their files): models MPAI, MNHO, MEHO and MSHO (0 and 1) with
+// their textures (T...), the first three on Honey's own motions, the fourth on its own (MOT_SHN) with its own
+// win file (WSHONEY). Characters 11 to 14 are set up for them in the program (its per-character tables);
+// giving Honey's own number (6) other clothes' files does not work: the model set-up (0x06022018) does not
+// finish for those whose models differ. In the Japanese game the character select gives Honey's player one
+// of 11 to 14 (with buttons held as she is chosen, once unlocked: bits 0x4000 and 0x2000 of the unlock word,
+// set at 0x0601DBF6 when arcade mode is finished as her on the third and fourth settings, and save bytes
+// 0x00200B01 and 0x002000E5); the American select program has that code cut out, and it runs from VDP1's
+// memory, where nothing can be attached. So here they are a choice of the port's: with clothes chosen,
+// characters 11 to 14's entries in the tables name their files, as in the Japanese program, and a player
+// who has chosen Honey (0x06091EE0, a byte a player) is given that character: every Honey wears them.
+constexpr const char *kHoneyFeature = "honey_clothes";
+// Characters 11 to 14's entries in the tables, as the Japanese program has them (the American: Honey's)
+struct Clothes {
+    const char *model0, *model1, *texture0, *texture1, *motion, *win;
+};
+constexpr Clothes kHoney = {"MHON0.BIN", "MHON1.BIN", "THON0.BIN", "THON1.BIN", "MOT_HON.BIN", "WHONEY.BIN"};
+constexpr Clothes kClothes[4] = {
+    {"MPAI0.BIN", "MPAI1.BIN", "TPAI0.BIN", "TPAI1.BIN", "MOT_HON.BIN", "WHONEY.BIN"},
+    {"MNHO0.BIN", "MNHO1.BIN", "TNHO0.BIN", "TNHO1.BIN", "MOT_HON.BIN", "WHONEY.BIN"},
+    {"MEHO0.BIN", "MEHO1.BIN", "TEHO0.BIN", "TEHO1.BIN", "MOT_HON.BIN", "WHONEY.BIN"},
+    {"MSHO0.BIN", "MSHO1.BIN", "TSHO0.BIN", "TSHO1.BIN", "MOT_SHN.BIN", "WSHONEY.BIN"},
+};
+constexpr int kHoneyCharacter = 6, kFirstClothes = 11;
+// Where each table's entries start (character 0; the motions' table has a first entry of its own)
+constexpr uint32_t kModels0 = 0x06085CAC, kModels1 = 0x06085DEC, kTextures0 = 0x06085F2C, kTextures1 = 0x0608606C,
+                   kMotions = 0x060861AC + kNameSize, kWins = 0x06086580;
+// The characters the players have chosen (bytes, player 1 and 2; round.cpp reads them for the records)
+constexpr uint32_t kChosen = 0x06091EE0;
+
+int g_haveClothes = -1;
+
+// Which clothes (1-4), 0: her own
+int HoneyClothes() {
+    const int chosen = FeatureValue(kHoneyFeature);
+    if (chosen <= 0 || chosen > 4) {
+        return 0;
+    }
+    if (g_haveClothes < 0) {
+        std::vector<uint8_t> data;
+        g_haveClothes = ReadDiscFile("MPAI0.BIN", data) ? 1 : 0;
+        if (!g_haveClothes) {
+            fprintf(stderr, "Honey's clothes: not on the disc (the Japanese disc is needed too); left as they are\n");
+        }
+    }
+    return g_haveClothes == 1 ? chosen : 0;
+}
+
+void SetHoneyClothes(int chosen) {
+    for (int i = 0; i < 4; i++) {
+        const Clothes &c = chosen ? kClothes[i] : kHoney;
+        const Clothes &other = chosen ? kHoney : kClothes[i];
+        const uint32_t at = static_cast<uint32_t>(kFirstClothes + i) * kNameSize;
+        SetName(kModels0 + at, c.model0, {other.model0});
+        SetName(kModels1 + at, c.model1, {other.model1});
+        SetName(kTextures0 + at, c.texture0, {other.texture0});
+        SetName(kTextures1 + at, c.texture1, {other.texture1});
+        SetName(kMotions + at, c.motion, {other.motion});
+        SetName(kWins + at, c.win, {other.win});
+    }
+    for (uint32_t player = 0; player < 2; player++) {
+        uint8_t *p = Ram(kChosen + player);
+        if (p && chosen && *p == kHoneyCharacter) {
+            *p = static_cast<uint8_t>(kFirstClothes - 1 + chosen);
+        }
+        // (switched off, nothing is put back: a Honey made one of 11 to 14 is Honey as the American program
+        // has those, with her own files)
     }
 }
 
@@ -136,15 +217,20 @@ bool LoadFile(Guest &g) {
 
 } // namespace
 
-void PepsimanAfterFrame() {
+void JapaneseAfterFrame() {
     SetProgram(On());
+    SetHoneyClothes(HoneyClothes());
 }
 
-void RegisterPepsiman() {
+void RegisterJapanese() {
     TheGame().features.push_back({kFeature, "Game", "Pepsiman",
                                   "The Japanese release's extra character, from your Japanese disc (keep it in the same folder as "
                                   "your American disc). Unlocked as in that release, or by Unlock everything; on the character "
                                   "select, move left from Grace. From the next character select.", kFeatureEnhanced});
+    TheGame().features.push_back({kHoneyFeature, "Game", "Honey's clothes",
+                                  "The other clothes the Japanese release gives Honey (Candy), from your Japanese disc (keep it in "
+                                  "the same folder as your American disc). Every Honey chosen wears them. From her next fight.",
+                                  0, {"Her own", "Pink", "Her own, white ribbon", "School uniform", "Summer clothes"}});
     const shared::Routine &original = shared::kAm2LoadFile;
     const shared::Routine loadFile = {original.name, original.size, original.hash, LoadFile};
     shared::Register(loadFile, 0x06029B44);

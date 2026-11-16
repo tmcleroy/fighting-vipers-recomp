@@ -20,8 +20,8 @@ void RegisterCamera();     // camera.cpp
 void CameraAfterFrame();
 void TrainingAfterFrame();
 void TrainingState(Archive &ar);
-void RegisterPepsiman();   // pepsiman.cpp
-void PepsimanAfterFrame();
+void RegisterJapanese();   // japanese.cpp
+void JapaneseAfterFrame();
 
 namespace {
 
@@ -29,7 +29,7 @@ namespace {
 // Megamix carries too, replaced by the toolkit's shared C++ (satrecomp/runtime/shared_lifts.h)
 void RegisterShared() {
     using namespace shared;
-    // (LoadFile, kAm2LoadFile at 0x06029B44: pepsiman.cpp's, which loads as it does)
+    // (LoadFile, kAm2LoadFile at 0x06029B44: japanese.cpp's, which loads as it does)
     Register(kAm2ReadPads, 0x0602BA24);
     Register(kGfsOpen, 0x06044D78);
     Register(kGfsStart, 0x06045020);
@@ -53,9 +53,9 @@ void RegisterGame() {
     RegisterCheats();
     RegisterTraining();
     RegisterCamera();
-    RegisterPepsiman();
+    RegisterJapanese();
     TheGame().frame = [] {
-        PepsimanAfterFrame();
+        JapaneseAfterFrame();
         CameraAfterFrame();
         TrainingAfterFrame();
         WidescreenAfterFrame();

@@ -19,7 +19,7 @@ void RegisterCheats() {
     // - 0x00200080, a word of unlocks: 0x0100 when arcade mode is first finished (0x0601DB5E: Mahler, and the
     //   title's Options Plus), 0x8000 when finished on the hardest setting (B.M.), 0x0400 at the 50th match
     //   (0x0601D300: Kumachan). The screens read it through 0x85FF or 0x05FF; 0x0200 is the Japanese disc's
-    //   Pepsiman, raised only with the feature that brings him in (pepsiman.cpp).
+    //   Pepsiman, raised only with the feature that brings him in (japanese.cpp).
     // - 0x00200048, the matches played: Big Heads in Options Plus from the 200th (0x0603336E, "more than 199").
     // - 0x00200AF0, training mode's OKs: the wall display from the 301st (0x060336B4, "more than 299").
     game.features.push_back({"unlock_all", "Cheats", "Unlock everything",
