@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Export pictures writes PNG files instead of JPEG: each picture exactly as the Saturn shows it. Pictures exported
+  before stay as they were; export again for the PNG files.
+
 ## 0.1.0-beta.5
 
 Pepsiman, Honey's other clothes, the Portrait gallery and most of the exported pictures need the Japanese disc
