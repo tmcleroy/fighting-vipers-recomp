@@ -7,6 +7,7 @@
 
 #include "disc_files.h"
 #include "menu.h"
+#include "soundtrack.h"
 
 #include <atomic>
 #include <cstdint>
@@ -51,6 +52,7 @@ struct Options {
     std::string biosPath;
     std::string discPath;
     std::string extraDiscPath; // another disc of the game: files not on discPath are read from it (optional)
+    std::string soundtrack;   // a custom soundtrack's folder (soundtrack.h; none: "soundtrack" beside settings.ini)
     std::string backupPath;   // internal backup memory image (created when missing)
     std::string moviePlay;    // input movie to replay
     std::string movieRecord;  // input movie to write
@@ -117,6 +119,8 @@ struct Port {
     DiscFiles discFiles;
     DiscFiles extraDiscFiles; // (--extra-disc: open when one was given and could be read)
     bool haveExtraDisc = false;
+    Soundtrack soundtrack; // (a custom soundtrack: soundtrack.h)
+    void OpenSoundtrack();
     bool OpenDiscFiles();
     void SetWideSplitsOn();
     satrecomp::video::YmirAdapter *videoAdapter = nullptr; // (owned by the video hardware)

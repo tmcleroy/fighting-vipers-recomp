@@ -176,6 +176,11 @@ bool CdPlay(Guest &g) {
     const int startTrack = g.Read8(what + 4), endTrack = g.Read8(what + 12);
     const uint8_t mode = g.Read8(what + 16);
     const int lastTrack = endKind == kPosTrack ? endTrack : startTrack;
+    // (SATRECOMP_LOG_MUSIC=1: each track the game asks for, for naming a game's songs)
+    static const bool log = getenv("SATRECOMP_LOG_MUSIC") != nullptr;
+    if (log && startKind == kPosTrack) {
+        fprintf(stderr, "music: track %d-%d mode %02X (asked from %08X)\n", startTrack, lastTrack, mode, g.PR());
+    }
     if (startKind == kPosTrack && music::IsAudioTrack(startTrack) && satrecomp::FeatureOn(kMusicCarriesOn) &&
         music::IsPlaying(startTrack, lastTrack)) {
         // (asked for what is playing already, at a new round: it goes on)

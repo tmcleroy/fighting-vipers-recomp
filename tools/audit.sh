@@ -11,8 +11,9 @@ git ls-files > "$LIST"
 
 fail=0
 check() { if [ -n "$2" ]; then echo "AUDIT FAIL: $1"; echo "$2" | head -10; fail=1; else echo "ok: $1"; fi; }
-# (this script names the things it looks for, so it is not searched itself)
-grep_files() { grep -v '^tools/audit\.sh$' "$LIST" | tr '\n' '\0' | xargs -0 grep -nIE "$@" 2>/dev/null || true; }
+# (this script names the things it looks for, so it is not searched itself; nor are the toolkit's sound file
+# decoders, other projects' files as they publish them, which the notices list)
+grep_files() { grep -v -e '^tools/audit\.sh$' -e '^satrecomp/port/decoders/' "$LIST" | tr '\n' '\0' | xargs -0 grep -nIE "$@" 2>/dev/null || true; }
 
 check "no game, disc, BIOS, save or archive file types" "$(grep -iE '\.(bin|cue|iso|chd|ccd|img|sub|mdf|mds|gdi|rom|bkr|sav|srm|state|zip|7z|rar|key)$' "$LIST" || true)"
 check "nothing made from the game (block lists, generated code, memory dumps)" "$(grep -E '(^|/)(work|build)/|(^|/)blocks[^/]*\.txt|blocks_[0-9]+\.cpp$|decode\.bin$|(^|/)gen(-ref)?/|\.(dump|ram)$' "$LIST" || true)"
@@ -23,7 +24,8 @@ check "at most ten pictures in docs/screenshots" "$(grep -c '^docs/screenshots/'
 check "no key-like hex strings (32 digits or more)" "$(grep_files '(^|[^0-9a-fA-F.])[0-9a-fA-F]{32,}([^0-9a-fA-F]|$)' | grep -vE 'YMIR_COMMIT|_COMMIT=[0-9a-f]{40}$|URL_HASH SHA256=[0-9a-f]{64}|SHA256=[0-9a-f]{64}|= [0-9a-f]{64} \]|recomp-common/COMMIT:|^satrecomp/COMMIT:|^\.github/workflows/' || true)"
 check "no home folder paths" "$(grep_files -e '/Users/[a-z]' -e '/home/[a-z]+/' -e 'C:\\\\Users\\\\[a-z]' || true)"
 check "no private session links or private network addresses" "$(grep_files -e 'claude\.ai/code/session' -e '\b192\.168\.[0-9]+\.[0-9]+' -e '\b10\.[0-9]+\.[0-9]+\.[0-9]+\b' || true)"
-check "no file over 512 KB" "$(tr '\n' '\0' < "$LIST" | xargs -0 find 2>/dev/null -prune -type f -size +512k || true)"
+check "no file over 512 KB (the toolkit's decoders: 1 MB)" "$( (grep -v '^satrecomp/port/decoders/' "$LIST" | tr '\n' '\0' | xargs -0 find 2>/dev/null -prune -type f -size +512k; \
+    grep '^satrecomp/port/decoders/' "$LIST" | tr '\n' '\0' | xargs -0 find 2>/dev/null -prune -type f -size +1024k) || true)"
 check "no words that point to where game files are found" "$(grep_files -i -e 'rom ?site' -e 'emuparadise' -e 'vimm' -e 'cdromance' -e 'romsfun' -e 'torrent' -e 'download (the|a|an) (rom|iso|bios|disc image)' || true)"
 check "no console maker's SDK files or names" "$(grep_files -e '\bsl(Init|Print|PutPolygon|DispSprite)[A-Za-z]*\b' -e '\b(GFS|SPR|SCL|PER|CDC|CSH|STM)_[A-Z][A-Za-z0-9]+\(' -e 'sgl\.h' -e 'sega_(sys|gfs|spr|scl|per|bup|cdc)\.h' || true)"
 # An emulator is a development reference here, never part of the tree: its sources are fetched by
@@ -32,7 +34,9 @@ check "no submodules" "$(git ls-files -s | awk '$1 == "160000" {print $4}'; [ ! 
 check "no patch files" "$(grep -iE '\.(patch|diff)$|(^|/)patches/' "$LIST" || true)"
 check "no emulator's sources in the tree" "$(grep -iE '(^|/)(third_party|vendor|external|deps)/.+/.+|(^|/)(ymir|mednafen|yabause|kronos|mame|musashi|libretro)[^/]*/' "$LIST" || true)"
 check "files adapted from another project are only the ones the notices list" "$(grep_files -l -i -e 'adapted from' -e 'ported from' -e 'SPDX-License-Identifier: GPL-3.0-or-later' | grep -vE '^satrecomp/recomp-common/launcher/src/(ui\.cpp|ui\.h|embedded\.h)$|^(THIRD_PARTY_NOTICES|CONTRIBUTING)\.md$|^docs/' || true)"
-# (librashader's C header is MIT, and listed in THIRD_PARTY_NOTICES.md)
-check "every source file has a license line" "$(grep -E '\.(h|c|cpp|inc|frag|vert|py|sh|mk|cmake)$|CMakeLists\.txt$|(^|/)Makefile$' "$LIST" | tr '\n' '\0' | xargs -0 grep -LE 'SPDX-License-Identifier: GPL-3\.0-(only|or-later)' 2>/dev/null | grep -vE '^satrecomp/port/librashader\.h$' || true)"
+# (librashader's C header is MIT, and the toolkit's sound file decoders public domain or MIT, their licences at their
+# ends; THIRD_PARTY_NOTICES.md lists them)
+check "satrecomp/port/decoders/ holds only what the notices list" "$(grep '^satrecomp/port/decoders/' "$LIST" | while read -r f; do grep -qF "\`$f\`" THIRD_PARTY_NOTICES.md || echo "$f"; done)"
+check "every source file has a license line" "$(grep -E '\.(h|c|cpp|inc|frag|vert|py|sh|mk|cmake)$|CMakeLists\.txt$|(^|/)Makefile$' "$LIST" | tr '\n' '\0' | xargs -0 grep -LE 'SPDX-License-Identifier: GPL-3\.0-(only|or-later)' 2>/dev/null | grep -vE '^satrecomp/port/librashader\.h$|^satrecomp/port/decoders/' || true)"
 [ "$fail" = 0 ] || { echo "audit failed"; exit 1; }
 echo "audit passed ($(wc -l < "$LIST" | tr -d ' ') files)"

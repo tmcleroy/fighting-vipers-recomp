@@ -2,19 +2,23 @@
 
 ## Unreleased
 
+## 0.1.0-beta.5
+
+Pepsiman, Honey's other clothes, the Portrait gallery and most of the exported pictures need the Japanese disc
+image (Fighting Vipers (Japan)) beside your American one.
+
 - Export pictures (in-game menu, Game → Pictures): every full-screen picture of the game as a JPEG file, 84 with the Japanese
   disc beside yours (the endings, the Portrait gallery, Pepsiman's, the Japanese versions), to the pictures folder
-  in your files; Show pictures folder opens it. Toolkit at satrecomp (Export pictures).
+  in your files; Show pictures folder opens it.
 - The winner's close-up after a fight: the winner was drawn mostly off the bottom of the screen. The game draws
   that shot in double interlace (twice the lines), which the GPU renderer drew at twice its height; it is drawn
   at its height now, as the software renderer and the Saturn draw it.
-- Toolkit at satrecomp 433f324 (also: the shared `shared::MusicCarriesOn` option, which this game does not use).
 - Pepsiman, the Japanese release's extra fighter (Game, Enhanced): keep your Japanese disc image (Fighting Vipers
   (Japan)) in the same folder as the American one, or a folder in it, and the game takes his files from it; the
   launcher says under your disc whether it found it. He is unlocked as in Japan, or by Unlock everything; on the
-  character select, left of Kumachan, left of Grace. Toolkit at satrecomp 232cf72 (--extra-disc).
+  character select, left of Kumachan, left of Grace.
 - Honey's clothes (Game): the Japanese release's other four (Pink, White ribbon, Uniform, Aloha with its
-  ukulele attack), from the same disc, in versus, team battle and training as there.
+  ukulele attack), from the same disc, in arcade, versus, team battle and training.
 - Portrait in Options Plus (Game, Enhanced): the Japanese release's picture viewer, the characters' pictures and
   a gallery of 22 more from the same disc; with Pepsiman unlocked, Options Plus's PEPSIMAN RESET row too.
 - Unlock everything now shows Options Plus on the title's menu, as it said it did (the menu shows it only after
@@ -22,13 +26,14 @@
 - The in-game menu as in the other ports: training mode's aids under Alternative modes → Training mode, the
   dummy's choices on a Dummy page under it, and Reset game at the bottom (the game starts again as when switched
   on; your saves are kept).
-- Honey's clothes in arcade mode too.
 - The credits after the last arcade match no longer stop on their STAFF title: the game asks every frame after the
   file being streamed and took the "complete" the credits were waiting for. A background queue of files that
-  loaded slowly in ordinary play for the same reason now loads at once. Toolkit at satrecomp (PollOnlyLooks).
+  loaded slowly in ordinary play for the same reason now loads at once.
 - Widescreen: the training character select (its top row of faces cut apart, a purple bar showing through), the
   training's SELECT CPU TYPE and its display at the top were cut apart by the fight's gauge layout; that layout
-  is now used in fights only, and not in training. Toolkit at satrecomp (menu pages, Reset game, wideSplitsOn).
+  is now used in fights only, and not in training.
+- Save states made by earlier versions can no longer be loaded (the toolkit's save states now keep the music's place).
+- Toolkit at satrecomp 67a5fd4.
 
 ## 0.1.0-beta.4
 
