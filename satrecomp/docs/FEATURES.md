@@ -166,7 +166,7 @@ discs with some of its music (`Game::songDiscs`: a disc's product number, or its
 the same tracks, and which of its tracks are which of the game's): such a disc image put in the folder (its .cue,
 or a folder with it) is found and used with nothing more. `songs.txt`, written at every start, says how, which
 discs were found, and what plays for each song; game.cfg's `soundtrack_discs` names the discs on the launcher's
-row. Fighters Megamix takes the Vipers' and Virtua Fighter 2's stage music, full length, from their discs this
+row, which shows only for a game whose game.cfg says `custom_soundtrack = yes` (one with `Game::songs`). Fighters Megamix takes the Vipers' and Virtua Fighter 2's stage music, full length, from their discs this
 way.
 
 The music goes where the disc's would, into the sound chip's CD audio input (`runtime/music.h`, `Replacement`),

@@ -229,7 +229,8 @@ const launcher::Description& launcher::describe() {
                                                         : std::string()) +
             ". The game writes songs.txt there: the songs' names, and what plays for each. None chosen: the soundtrack folder "
             "in the game's own folder.";
-        d.folders = {{"soundtrack", "Custom soundtrack", soundtrack_detail.c_str(), "--soundtrack"}};
+        if (LAUNCHER_CUSTOM_SOUNDTRACK) // (only a game that has one: game.cfg's custom_soundtrack)
+            d.folders = {{"soundtrack", "Custom soundtrack", soundtrack_detail.c_str(), "--soundtrack"}};
         d.display = {
             // (a window unless asked, as in the other ports; in SteamOS's Game Mode the other way round)
             {"fullscreen", "Full screen", "F11 switches while playing.", console_session(), nullptr},

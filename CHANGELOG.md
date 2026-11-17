@@ -33,7 +33,7 @@ image (Fighting Vipers (Japan)) beside your American one.
   training's SELECT CPU TYPE and its display at the top were cut apart by the fight's gauge layout; that layout
   is now used in fights only, and not in training.
 - Save states made by earlier versions can no longer be loaded (the toolkit's save states now keep the music's place).
-- Toolkit at satrecomp 2ab6611.
+- Toolkit at satrecomp 67a5fd4.
 
 ## 0.1.0-beta.4
 
