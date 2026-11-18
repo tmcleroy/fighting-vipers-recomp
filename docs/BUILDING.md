@@ -96,6 +96,7 @@ personal paths before it is packed (`tools/release/check_archive.sh`).
 | `tools/release/macos.sh` | macOS on Apple silicon | `FightingVipers-macos.zip`: `Fighting Vipers.app` for Apple silicon and Intel (macOS 13+, SDL 3 static, signed ad hoc) |
 | `tools/release/linux.sh` | x86_64 Linux, e.g. the container of `tools/release/Dockerfile` | `FightingVipers-linux-x86_64.tar.gz` (SDL 3 and the C++ library static; also for SteamOS) |
 | `tools/release/windows.sh` | x86_64 Linux with MinGW-w64 (cross-compile), the same container | `FightingVipers-windows-x64.zip` (with `SDL3.dll`) |
+| `tools/release/android.sh` | macOS or Linux with a JDK 17, the Android SDK (platform 34, NDK 27.2) and Rust | `FightingVipers-android.apk`: the launcher and the game for ARM64 phones and tablets, Android 9 and later (`DISC=<folder>` packs your own disc in, for your own phone only) |
 
 `tools/release/all.sh` runs the three on an Apple silicon Mac with Docker and writes
 `SHA256SUMS.txt`. [RELEASING.md](RELEASING.md) has the whole process.

@@ -65,6 +65,7 @@ licenses() {
     cp "$3" "$1/SDL3.txt"
     cp "$2/_deps/imgui-src/LICENSE.txt" "$1/DearImGui.txt"
     cp "$(find "$2/_deps/inter-src" -iname 'LICENSE*' | head -1)" "$1/Inter-OFL.txt"
+    cp "$ROOT/satrecomp/recomp-common/launcher/flags-LICENSE.txt" "$1/flag-icons-MIT.txt"
 }
 
 # update_files PLATFORM TOP ARCHIVE: what the launcher updates itself from (satrecomp/recomp-common/launcher/

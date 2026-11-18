@@ -17,7 +17,7 @@ grep_files() { grep -v -e '^tools/audit\.sh$' -e '^satrecomp/port/decoders/' "$L
 
 check "no game, disc, BIOS, save or archive file types" "$(grep -iE '\.(bin|cue|iso|chd|ccd|img|sub|mdf|mds|gdi|rom|bkr|sav|srm|state|zip|7z|rar|key)$' "$LIST" || true)"
 check "nothing made from the game (block lists, generated code, memory dumps)" "$(grep -E '(^|/)(work|build)/|(^|/)blocks[^/]*\.txt|blocks_[0-9]+\.cpp$|decode\.bin$|(^|/)gen(-ref)?/|\.(dump|ram)$' "$LIST" || true)"
-check "no pictures but the ones in docs/screenshots" "$(grep -iE '\.(png|jpe?g|gif|bmp|ppm|webp|mp4|mov|webm|wav|ogg|mp3|flac)$' "$LIST" | grep -vE '^docs/screenshots/[a-z-]+\.(png|jpg)$' || true)"
+check "no pictures but the ones in docs/screenshots" "$(grep -iE '\.(png|jpe?g|gif|bmp|ppm|webp|mp4|mov|webm|wav|ogg|mp3|flac)$' "$LIST" | grep -vE '^docs/screenshots/[a-z-]+\.(png|jpg)$' | grep -vx 'satrecomp/recomp-common/launcher/flags\.png' || true)"
 check "at most ten pictures in docs/screenshots" "$(grep -c '^docs/screenshots/' "$LIST" | awk '$1 > 10 {print $1 " files"}')"
 # (the published checksums of the libraries the builds download, and the hashes of the copied toolkit's
 # files, are not keys)
