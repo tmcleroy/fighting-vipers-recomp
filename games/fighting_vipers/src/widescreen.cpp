@@ -39,8 +39,18 @@ bool FightDisplayUp() {
     return Ram32(kMainState) == kMainFight && !(mode && *mode == fv::kModeTraining);
 }
 
+// The staff roll (main states 13 and 14) is laid out for 4:3: each stage's scene shows in a frame with black
+// borders across the top and bottom, the names over it. Beyond the frame's sides the scroll screens hold what the
+// game never shows (from the sixth stage, rows of stripes), so the picture keeps to 4:3 there.
+bool StaffRoll() {
+    constexpr uint32_t kMainState = 0x06090760;
+    const uint32_t state = Ram32(kMainState);
+    return state == 13 || state == 14;
+}
+
 void RegisterWidescreen() {
     TheGame().wideSplitsOn = FightDisplayUp;
+    TheGame().pillarbox = StaffRoll;
     constexpr uint32_t kNBG2 = 2;
     TheGame().wideSplits = {
         // rows of the 448-line picture; columns: where the left player's gauge ends and the right one's begins
