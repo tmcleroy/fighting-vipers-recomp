@@ -40,6 +40,15 @@ battle and training (fv::kModeTraining is 5). Checked: all four in arcade fights
 loss, continue, game over), training (both players), her own in arcade after it; native_74's hashes as main's.
 Not checked by hand: Aloha's ukulele attack, versus and team battle.
 
+Fix (2026-11-18, a tester's video: Pepsiman against the computer's Candy, she rolled about in a ball and jumped
+round the arena): the clothes went to every Honey in 0x06091EE0/1, and in arcade the computer's fighter is written
+there (0x06091EE1) in the same frame as the game sets her up with character 6's files; made 14 after that, her own
+model ran on Aloha's tables (13, Uniform, on Honey's own motions, showed nothing). In arcade and team battle only
+the sides 0x060E0001 says are people's are changed now (versus and training choose both on the select screen).
+Seen headless: arcade with one_hit and mash, honey_clothes=4, the fifth stage's Candy (0x06091EE1 stayed 6, fought
+and was knocked out normally, the run went on); player 1 choosing Honey (six rights on the select) still 0x0E,
+Aloha's clothes in the fight.
+
 ## Options Plus: Portrait and Pepsiman Reset (2026-11-16)
 
 The American program still has the Japanese release's picture viewer: main states 37 (0x06043FD0), 38
