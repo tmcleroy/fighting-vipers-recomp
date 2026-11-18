@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- The in-game menu is laid out as in the other recomp ports: Display and Game first, Speed and Mute on the Game
+  page (with Cheats, Sound and Pictures under it), and a new **Reset all options** (every option back to the
+  Enhanced preset, and full speed). The Armour page is under Training mode now. Speeds from 1/8 to 8x. The mouse works the menu; held arrows repeat;
+  the gamepad's Guide button opens it (Back alone no longer does; Start and Back together still do). **P** pauses
+  and **O** goes on a frame (F4 and F8 still do), **F12** saves a screenshot.
 - Widescreen, the staff roll after arcade mode: rows of stripes showed at the sides from the sixth stage's scene on.
   The staff roll is drawn for 4:3 (each scene in a frame of its own), so it is shown in 4:3 now, black at the sides.
 - The staff roll's song fades out over the winner's picture (Game, Enhanced), instead of going on at full volume
