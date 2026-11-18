@@ -33,8 +33,9 @@
 //                    parts the fighter's move attacks with; yellow: parts being touched by an attack.
 //   Armour readout   by each gauge, what is left of the upper and the lower armour (its strength less the
 //                    damage it has taken), or OFF.
-//   Armour           (category "Armour", one at a time) the armour never comes off (and is put back if it
-//                    has); or the opponent has none; or nobody has.
+//   Armour           (category "Armour", one at a time, its page under Training mode, working in every mode)
+//                    the armour never comes off (and is put back if it has); or the opponent has none; or
+//                    nobody has.
 //   Dummy            (category "Dummy", one at a time) the opponent stands, crouches, guards (standing,
 //                    low, standing or low by chance for each attack, or only after a hit; or guards and
 //                    counters as soon as it can, with the move chosen under "Dummy counter") or jumps
@@ -1435,11 +1436,12 @@ void RegisterTraining() {
     // they do nothing, and keep what the player chose for when it next is. (The Armour choices change the game,
     // as the cheats do, and work anywhere.)
     // The menu's pages, as in the other ports: Alternative modes at the head of the menu, Training mode under it,
-    // the dummy's page under that, and the dummy's answers under the dummy's
+    // the dummy's page and the armour's under that, and the dummy's answers under the dummy's
     game.pages.push_back({"Alternative modes", "", "Other ways to play: training mode, and its aids."});
     game.pages.push_back({kTrainingPage, "Alternative modes",
                           "The aids for the game's own TRAINING MODE (on its main menu): they work there and stay off elsewhere."});
     game.pages.push_back({"Dummy", kTrainingPage, "What the opponent does in a training session."});
+    game.pages.push_back({"Armour", kTrainingPage, "Armour that stays on or comes off: in every mode, not only in training."});
     game.pages.push_back({"Dummy counter", "Dummy", "The move the dummy counters with."});
     game.pages.push_back({"Dummy recovery", "Dummy", "What the dummy does when it is knocked down."});
     game.pages.push_back({"Dummy wake-up", "Dummy", "What the dummy does as it gets up."});

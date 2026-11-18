@@ -87,8 +87,8 @@ for them are closed. Where your settings and saves are kept: [docs/LAUNCHER.md](
 ## Controls
 
 Keyboard: arrows, Z / X / C for guard, punch and kick, Return for Start; on a gamepad, the d-pad or left stick and
-the lower buttons. While playing, **Esc**, **F1** or the gamepad's Back button opens the menu (its "Quit game" row
-is how you leave), and **F11** switches full screen. [docs/LAUNCHER.md](docs/LAUNCHER.md#controllers) has the whole
+the lower buttons. While playing, **Esc**, **F1**, the gamepad's Guide button, or Start and Back together open the
+menu (its "Quit game" row is how you leave), and **F11** switches full screen. [docs/LAUNCHER.md](docs/LAUNCHER.md#controllers) has the whole
 layout and every key.
 
 ## Status

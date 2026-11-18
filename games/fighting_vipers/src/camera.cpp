@@ -179,9 +179,11 @@ void RegisterCamera() {
     RegisterLifts(fv::camera::kLifts, std::size(fv::camera::kLifts));
     TheGame().features.push_back({"free_camera", "Display", "Free camera",
                                   "The fight seen from wherever you turn the camera, round the two fighters: a gamepad's right "
-                                  "stick, or I, J, K and L on the keyboard; U and O come nearer and go farther. It starts as the "
+                                  "stick, or I, J, K and L on the keyboard; U and O come nearer and go farther (F8 is then the frame step). It starts as the "
                                   "game's camera and follows the fight as that does. Only the picture changes: the game plays the same.",
                                   0});
+    // (while it is on, O is its key (farther), not the frame step's: F8 steps then)
+    TheGame().lookOn = [] { return FeatureOn("free_camera"); };
 }
 
 // After every frame the game ran: the player's turn for the next frame

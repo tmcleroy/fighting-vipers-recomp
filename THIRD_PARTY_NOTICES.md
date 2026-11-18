@@ -50,6 +50,13 @@ projects publish them (each with its licence at its end), compiled unchanged int
 | `satrecomp/port/decoders/dr_mp3.h` | dr_libs `dr_mp3` 0.7.4 (the same commit), by David Reid, after minimp3 by lieff | Public domain, or MIT No Attribution |
 | `satrecomp/port/decoders/dr_wav.h` | dr_libs `dr_wav` 0.14.6 (the same commit), by David Reid | Public domain, or MIT No Attribution |
 
+### Country flags (MIT)
+
+`satrecomp/recomp-common/launcher/flags.png` (compiled into the launcher) holds every ISO country's flag from
+[flag-icons](https://github.com/lipis/flag-icons) 7.2.3, Copyright (c) 2013 Panayiotis Lipiridis, MIT License;
+`satrecomp/recomp-common/launcher/src/countries.h` has their names from it. A release carries the license as
+`licenses/flag-icons-MIT.txt`.
+
 ## Downloaded at build time and included in release builds
 
 None of these is stored in this repository.
@@ -65,7 +72,7 @@ None of these is stored in this repository.
 | GCC runtime libraries (libstdc++, libgcc, winpthreads) | GPL-3.0 with the GCC Runtime Library Exception; MIT and BSD (winpthreads) | The C++ runtime | Linked statically (Linux, Windows) |
 
 Each download is checked against its published SHA-256. Release archives carry the license texts of
-SDL 3, Dear ImGui and Inter in a `licenses/` folder, beside this file and the GPL-3.0.
+SDL 3, Dear ImGui, Inter and flag-icons in a `licenses/` folder, beside this file and the GPL-3.0.
 
 ## Tools used to build (not included in builds)
 
