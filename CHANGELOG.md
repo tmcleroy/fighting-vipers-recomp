@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Widescreen, the staff roll after arcade mode: rows of stripes showed at the sides from the sixth stage's scene on.
+  The staff roll is drawn for 4:3 (each scene in a frame of its own), so it is shown in 4:3 now, black at the sides.
+- The staff roll's song fades out over the winner's picture (Game, Enhanced), instead of going on at full volume
+  into the GAME OVER music. The original game's command for the fade fades only CD music, and this song is not.
 - Export pictures writes PNG files instead of JPEG: each picture exactly as the Saturn shows it. Pictures exported
   before stay as they were; export again for the PNG files.
 

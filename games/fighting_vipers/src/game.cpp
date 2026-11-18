@@ -22,6 +22,7 @@ void TrainingAfterFrame();
 void TrainingState(Archive &ar);
 void RegisterJapanese();   // japanese.cpp
 void RegisterPictures();   // pictures.cpp
+void RegisterEnding();     // ending.cpp
 void JapaneseAfterFrame();
 
 namespace {
@@ -63,6 +64,7 @@ void RegisterGame() {
     RegisterCamera();
     RegisterJapanese();
     RegisterPictures();
+    RegisterEnding();
     TheGame().frame = [] {
         JapaneseAfterFrame();
         CameraAfterFrame();

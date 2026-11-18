@@ -586,3 +586,29 @@ src/pictures.cpp: every full-screen picture file (512x224, 16-bit, the picture i
 characters'), OVER_00, and from the Japanese disc PO_PEPnn, ZOMAKE00-21 and its own versions of the eleven that
 differ (PO_GRA04, PO_HON02-04, PO_JAN02, PO_PIC02-03, PO_SAN01, PO_SAN04, PO_TKO04-05: "-japan"). Named
 grace-1, gallery-01, game-over. 47 from the American disc, 84 with both. Through satrecomp's Export pictures.
+
+## The staff roll in widescreen; its song's end (2026-11-18)
+
+A tester: in widescreen "garbage lines" at the sides two-thirds into the staff roll, and the ending music over the
+GAME OVER sting. Reached headless: arcade with `one_hit`, a movie of Start for the menus and punches and kicks after
+(about 21,700 frames to the name entry).
+
+- The staff roll (main states 13, 14) draws each stage's scene with its 3D floor in a frame with black borders above
+  and below; beyond the frame's sides the scroll screens hold what the game never shows (from the sixth stage, rows
+  of stripes). The toolkit's `Game::pillarbox` (widescreen.cpp, StaffRoll) keeps those two states to 4:3. Checked:
+  every scene of the roll in 16:9 (GPU, a picture every 60 frames), the last fight before it still widescreen.
+- The song is the sound driver's (no CD track is asked for). Over the winner's picture after it (state 12, handler
+  0x0601E02A; the frame loop's countdown 0x060E0060 from 328) the game sends 0xA0023CFF, the command it sends at
+  the end of every round to fade the music, which only sets DSP coefficients 0x70C and 0x710 to 0x1C90: it fades
+  the CD input, not the driver's voices. At GAME OVER (state 15, 0x060397F6) it sends 0xA00001FF (another sound
+  bank) and asks for track 6; the bank change stops the song about a quarter second after the track starts. The
+  reference build (Ymir's 68000 and chip, the game unchanged, to the credits by poking the gauges) gives the same
+  levels: the original does this. `ending_fade` (ending.cpp, Enhanced): over the picture, MVOL (0x25B00401) down a
+  step every 10 frames from the countdown's 318, the bank changed at 160, MVOL back to 15 at 2; only when byte
+  0x060E0004 (the stage) is 9, i.e. after the staff roll, not after a lost game (whose music is CD and fades).
+  Checked: silence from about 2.5 s into the picture to GAME OVER, then track 6 alone (its level measured with the
+  track taken out of the mix); with it off, state and sound byte for byte main's to the name entry; native_74's
+  hashes unchanged with it on or off. Not heard by a person.
+- The reference build linked no more since the custom soundtrack's decoders (dr_flac and dr_mp3 twice: Ymir's disc
+  loaders carry them): ours are file-local now.
+
