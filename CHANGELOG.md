@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Honey's clothes: with clothes chosen, the computer's Candy in arcade mode (and team battle) was given them in
+  the middle of being set up, and fought as her own model on the other clothes' data: with Aloha's, curled up in a
+  ball, jumping about the arena, the camera close up on her. Only a Honey a player chooses wears them now; the
+  computer's Candy is as in the original.
 - Widescreen, the staff roll after arcade mode: rows of stripes showed at the sides from the sixth stage's scene on.
   The staff roll is drawn for 4:3 (each scene in a frame of its own), so it is shown in 4:3 now, black at the sides.
 - The staff roll's song fades out over the winner's picture (Game, Enhanced), instead of going on at full volume

@@ -233,7 +233,16 @@ void SetHoneyClothes(int chosen) {
     if (mode != fv::kModeArcade && mode != fv::kModeVersus && mode != fv::kModeTeam && mode != fv::kModeTraining) {
         return;
     }
+    // Only a Honey a person has chosen. In arcade and team battle the game's own fighters are written to the same
+    // bytes, in the same frame as it sets them up: one of them changed then is Honey's model on another
+    // character's tables (with Aloha's, a ball that jumps about the arena). Versus and training choose both on
+    // the character select, before anything is set up.
+    const uint8_t people = Ram(fv::kPlayers) ? *Ram(fv::kPlayers) : 0;
+    const bool againstGame = mode == fv::kModeArcade || mode == fv::kModeTeam;
     for (uint32_t player = 0; player < 2; player++) {
+        if (againstGame && (people & (1u << player)) == 0) {
+            continue;
+        }
         uint8_t *p = Ram(kChosen + player);
         if (p && chosen && *p == kHoneyCharacter) {
             *p = static_cast<uint8_t>(kFirstClothes - 1 + chosen);
