@@ -101,6 +101,7 @@ layout and every key.
 | macOS | Built and run on Apple silicon. The Intel half of the app replays a recorded match to the same state under Rosetta; not yet run on an Intel Mac. |
 | Linux, SteamOS | x86_64: a recorded match replays to the same state, frame for frame, as on macOS, also on a Steam Deck, where the high-resolution renderer draws the same picture on Vulkan as on the Mac to within 0.2% of its pixels. ARM64: the same in an ARM64 container; not yet run on an ARM device. |
 | Windows x64 | The same recorded match replays to the same state under Wine. Not yet run on a Windows PC. |
+| Android | ARM64 phones and tablets, Android 9 and later, with touch controls beside a gamepad's (`tools/release/android.sh`; no release download yet). The disc is chosen with Android's picker. Played in the Android emulator: title, player select and a fight with the touch controls at full speed; not yet on a phone, and not yet heard. |
 
 Known issues: only the USA release of the disc is supported; on Linux and Windows the high-resolution renderer needs
 a Vulkan driver (without one the game falls back to the original resolution drawn in software); a Steam Deck has
