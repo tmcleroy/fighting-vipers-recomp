@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## 0.2.0
+
+- Android: an app for ARM64 phones and tablets, Android 9 and later (`FightingVipers-android.apk`). Touch controls beside
+  the picture (a stick, the buttons and their pairs, Start and Menu) hide while a gamepad is used; Back opens the
+  in-game menu. The disc is chosen with Android's picker, its .cue and all its .bin files at once, and copied into
+  the app's folder. Played on a Pixel 9, widescreen and high resolution included (the GPU renderer no longer asks
+  for GPU features it doesn't use, which Mali GPUs like the Pixel's lack).
 - Honey's clothes: with clothes chosen, the computer's Candy in arcade mode (and team battle) was given them in
   the middle of being set up, and fought as her own model on the other clothes' data: with Aloha's, curled up in a
   ball, jumping about the arena, the camera close up on her. Only a Honey a player chooses wears them now; the
@@ -12,6 +19,7 @@
   into the GAME OVER music. The original game's command for the fade fades only CD music, and this song is not.
 - Export pictures writes PNG files instead of JPEG: each picture exactly as the Saturn shows it. Pictures exported
   before stay as they were; export again for the PNG files.
+- Toolkit at satrecomp 9616b00.
 
 ## 0.1.0-beta.5
 
