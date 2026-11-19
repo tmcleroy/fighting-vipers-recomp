@@ -27,7 +27,7 @@ disc builds them and attaches them to the draft that the tag opens.
    ```sh
    git status --short            # must print nothing: build exactly what was tagged
    make gen
-   tools/release/all.sh          # audit, then macOS, Linux x86_64 and ARM64, Windows, then SHA256SUMS.txt
+   tools/release/all.sh          # audit, then macOS, Linux x86_64 and ARM64, Windows, Android, then SHA256SUMS.txt
    ```
 
    Each script refuses to pack an archive that holds game data, an emulator's name or a personal
@@ -40,7 +40,7 @@ disc builds them and attaches them to the draft that the tag opens.
    ```sh
    cd build/release
    gh release upload "v$(cat ../../VERSION)" FightingVipers-macos.zip \
-       FightingVipers-linux-x86_64.tar.gz FightingVipers-linux-arm64.tar.gz FightingVipers-windows-x64.zip \
+       FightingVipers-linux-x86_64.tar.gz FightingVipers-linux-arm64.tar.gz FightingVipers-windows-x64.zip FightingVipers-android.apk \
        SHA256SUMS.txt update-*.txt
    gh release edit "v$(cat ../../VERSION)" --draft=false
    ```

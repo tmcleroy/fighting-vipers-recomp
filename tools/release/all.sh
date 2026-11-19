@@ -17,8 +17,10 @@ tools/release/macos.sh
 docker run --rm --platform linux/amd64 -v "$ROOT":/src -w /src satrecomp-build tools/release/linux.sh
 docker run --rm --platform linux/arm64 -v "$ROOT":/src -w /src satrecomp-build-arm64 tools/release/linux.sh
 docker run --rm --platform linux/amd64 -v "$ROOT":/src -w /src satrecomp-build tools/release/windows.sh
+# (Android: signed with the release key, ~/.config/fighting_vipers/android-signing.env)
+RELEASE=1 tools/release/android.sh
 cd build/release
-shasum -a 256 *.zip *.tar.gz > SHA256SUMS.txt
+shasum -a 256 *.zip *.tar.gz *-android.apk > SHA256SUMS.txt
 cat SHA256SUMS.txt
 # (each manifest names its system's archive as it is)
 for manifest in update-*.txt; do
