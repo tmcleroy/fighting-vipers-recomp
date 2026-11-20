@@ -76,9 +76,9 @@ Download the file for your system from the [releases page](../../releases), then
 | Linux x86_64, SteamOS (Steam Deck, Steam Machine) | `FightingVipers-linux-x86_64.tar.gz` | Unpack and run `fighting_vipers-launcher`. On SteamOS, do this in Desktop Mode, and use the launcher's **Add to Steam** to have it in Game Mode. |
 | Linux ARM64 (aarch64) | `FightingVipers-linux-arm64.tar.gz` | Unpack and run `fighting_vipers-launcher`. |
 | Windows 10 or later, x64 | `FightingVipers-windows-x64.zip` | Unzip and run `fighting_vipers-launcher.exe`. Windows warns about an unknown publisher the first time: choose **More info**, then **Run anyway**. |
-| Android 9 or later, ARM64 phones and tablets | `FightingVipers-android.apk` | Open it on the phone and allow installing from where you opened it. In the app, choose the disc's .cue file and all its .bin files together: they are copied into the app's folder. |
+| Android 9 or later, ARM64 phones and tablets | `FightingVipers-android.apk` | Open it on the phone and allow installing from where you opened it. In the app, choose the disc's .chd file, or its .cue file and all its .bin files together: they are copied into the app's folder. |
 
-In the launcher, drop your disc image's `.cue` file on the window (or choose it), choose **Features** and
+In the launcher, drop your disc image's `.chd` or `.cue` file on the window (or choose it), choose **Features** and
 **Controllers** as you like (or leave them), and **Play**. The launcher checks that the image is the release this
 port is made from (USA, `MK-81041`, V2.000) and remembers where it is; it never copies, moves or changes it.
 

@@ -25,7 +25,7 @@ done
 for name in LICENSE THIRD_PARTY_NOTICES.md; do
     [ -n "$(find "$DIR" -name "$name*" | head -1)" ] || bad "missing $name" "$DIR"
 done
-for name in SDL3.txt DearImGui.txt Inter-OFL.txt; do
+for name in SDL3.txt DearImGui.txt Inter-OFL.txt libchdr.txt; do
     [ -n "$(find "$DIR" -name "$name" | head -1)" ] || bad "missing licenses/$name" "$DIR"
 done
 [ "$fail" = 0 ] || exit 1
