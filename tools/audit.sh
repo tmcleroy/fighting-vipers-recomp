@@ -21,7 +21,7 @@ check "no pictures but the ones in docs/screenshots" "$(grep -iE '\.(png|jpe?g|g
 check "at most ten pictures in docs/screenshots" "$(grep -c '^docs/screenshots/' "$LIST" | awk '$1 > 10 {print $1 " files"}')"
 # (the published checksums of the libraries the builds download, and the hashes of the copied toolkit's
 # files, are not keys)
-check "no key-like hex strings (32 digits or more)" "$(grep_files '(^|[^0-9a-fA-F.])[0-9a-fA-F]{32,}([^0-9a-fA-F]|$)' | grep -vE 'YMIR_COMMIT|_COMMIT=[0-9a-f]{40}$|URL_HASH SHA256=[0-9a-f]{64}|SHA256=[0-9a-f]{64}|= [0-9a-f]{64} \]|recomp-common/COMMIT:|^satrecomp/COMMIT:|^\.github/workflows/' || true)"
+check "no key-like hex strings (32 digits or more)" "$(grep_files '(^|[^0-9a-fA-F.])[0-9a-fA-F]{32,}([^0-9a-fA-F]|$)' | grep -vE 'YMIR_COMMIT|_COMMIT=[0-9a-f]{40}$|URL_HASH SHA256=[0-9a-f]{64}|/archive/[0-9a-f]{40}\.tar\.gz|SHA256=[0-9a-f]{64}|= [0-9a-f]{64} \]|recomp-common/COMMIT:|^satrecomp/COMMIT:|^\.github/workflows/' || true)"
 check "no home folder paths" "$(grep_files -e '/Users/[a-z]' -e '/home/[a-z]+/' -e 'C:\\\\Users\\\\[a-z]' || true)"
 check "no private session links or private network addresses" "$(grep_files -e 'claude\.ai/code/session' -e '\b192\.168\.[0-9]+\.[0-9]+' -e '\b10\.[0-9]+\.[0-9]+\.[0-9]+\b' || true)"
 check "no file over 512 KB (the toolkit's decoders: 1 MB)" "$( (grep -v '^satrecomp/port/decoders/' "$LIST" | tr '\n' '\0' | xargs -0 find 2>/dev/null -prune -type f -size +512k; \
