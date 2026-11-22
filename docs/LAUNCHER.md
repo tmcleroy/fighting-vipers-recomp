@@ -51,21 +51,24 @@ kick**: buttons pressed together, held as one. They have no key or button until 
 
 | Key | What it does |
 | --- | --- |
-| **Esc**, **F1**, or the gamepad's Back button | Opens and closes the in-game menu |
+| **Esc**, **F1**; the gamepad's Guide button, its left stick's click, or Start and Back together | Opens and closes the in-game menu |
 | **F11** | Full screen |
 | **F5** / **F9** | Save / load a state in the slot; **F6** / **F7** the slot before and the next |
 | **F2** / **F3** | Set the reset point / go back to it (a gamepad's right stick's click does both) |
-| **F4** / **F8** | Pause / go on one frame |
-| **-** / **=** | Slower / faster: 100, 50 or 25 percent |
-| The right stick, or **I** / **J** / **K** / **L**; **U** / **O** | With the free camera on: turn it; come nearer and go farther |
+| **P** (or **F4**) / **O** (or **F8**) | Pause / go on one frame |
+| **-** / **=** | Slower / faster: 1/8 to 8x |
+| **F12** | Screenshot, to `screenshots/` in your files |
+| The right stick, or **I** / **J** / **K** / **L**; **U** / **O** | With the free camera on: turn it; come nearer and go farther (**F8** is then the frame step) |
 
-![The menu while playing: save states, the features' pages, speed, the reset point](screenshots/menu.jpg)
+![The menu while playing: Display, Game, Alternative modes, save states, the reset point](screenshots/menu.jpg)
 
-The **in-game menu** stops the game while it is open: **Alternative modes** (training mode's aids, and the
-dummy's page under them), save and load a state (nine slots), a page for each kind of feature, the speed, the
-reset point, **Reset game** (the game starts again as when switched on; your saves are kept) and **Quit game**,
-which is how you leave (Esc only closes the menu). **Game → Pictures** has Export pictures and Show pictures folder. Up and down choose a row; A, B, C or Start change it or go into a page; left and right change a row
-with several values and leave a page.
+The **in-game menu** stops the game while it is open, laid out as in the other recomp ports: **Display**, **Game**
+(the speed, mute, Cheats, Pictures and the game's options), **Alternative modes** (Training mode, with the dummy's
+and the armour's pages under it), save and load a state (nine slots), the reset point, **Reset all options** (every
+option back to the Enhanced preset, and full speed), **Reset game** (the game starts again as when switched on; your
+saves are kept) and **Quit game**, which is how you leave (Esc only closes the menu). Up and down choose a row
+(held, they go on); Enter or A changes it or goes into a page; Backspace or B goes back a page; left and right
+change a row with several values. The mouse works it too: point at a row, click, and the right button goes back.
 
 ## Updates
 

@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- The in-game menu is laid out as in the other recomp ports: Display and Game first, Speed and Mute on the Game
+  page (with Cheats, Sound and Pictures under it), and a new **Reset all options** (every option back to the
+  Enhanced preset, and full speed). The Armour page is under Training mode now. Speeds from 1/8 to 8x. The mouse works the menu; held arrows repeat;
+  the gamepad's Guide button opens it (Back alone no longer does; Start and Back together still do). **P** pauses
+  and **O** goes on a frame (F4 and F8 still do), **F12** saves a screenshot.
+
 ## 0.2.0
 
 - Android: an app for ARM64 phones and tablets, Android 9 and later (`FightingVipers-android.apk`). Touch controls beside
