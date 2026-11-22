@@ -7,12 +7,25 @@
   Enhanced preset, and full speed). The Armour page is under Training mode now. Speeds from 1/8 to 8x. The mouse works the menu; held arrows repeat;
   the gamepad's Guide button opens it (Back alone no longer does; Start and Back together still do). **P** pauses
   and **O** goes on a frame (F4 and F8 still do), **F12** saves a screenshot.
+
+## 0.2.0
+
+- Android: an app for ARM64 phones and tablets, Android 9 and later (`FightingVipers-android.apk`). Touch controls beside
+  the picture (a stick, the buttons and their pairs, Start and Menu) hide while a gamepad is used; Back opens the
+  in-game menu. The disc is chosen with Android's picker, its .cue and all its .bin files at once, and copied into
+  the app's folder. Played on a Pixel 9, widescreen and high resolution included (the GPU renderer no longer asks
+  for GPU features it doesn't use, which Mali GPUs like the Pixel's lack).
+- Honey's clothes: with clothes chosen, the computer's Candy in arcade mode (and team battle) was given them in
+  the middle of being set up, and fought as her own model on the other clothes' data: with Aloha's, curled up in a
+  ball, jumping about the arena, the camera close up on her. Only a Honey a player chooses wears them now; the
+  computer's Candy is as in the original.
 - Widescreen, the staff roll after arcade mode: rows of stripes showed at the sides from the sixth stage's scene on.
   The staff roll is drawn for 4:3 (each scene in a frame of its own), so it is shown in 4:3 now, black at the sides.
 - The staff roll's song fades out over the winner's picture (Game, Enhanced), instead of going on at full volume
   into the GAME OVER music. The original game's command for the fade fades only CD music, and this song is not.
 - Export pictures writes PNG files instead of JPEG: each picture exactly as the Saturn shows it. Pictures exported
   before stay as they were; export again for the PNG files.
+- Toolkit at satrecomp 9616b00.
 
 ## 0.1.0-beta.5
 
