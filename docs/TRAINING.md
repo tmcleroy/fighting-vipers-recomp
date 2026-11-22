@@ -91,9 +91,9 @@ These work in every mode, not only in training:
 | Tool | Keys |
 | --- | --- |
 | The reset point: a moment kept to go back to | **F2** sets it, **F3** goes back to it; on a gamepad the right stick's click does both (the first click sets it); or the menu |
-| Pause | **F4** stops the game and lets it go on |
-| Frame advance | **F8** goes on one frame (and stops the game if it was running) |
-| Slow motion | 100, 50 or 25 percent: the **-** and **=** keys, or the menu's Speed (no sound in slow motion) |
+| Pause | **P** (or **F4**) stops the game and lets it go on |
+| Frame advance | **O** (or **F8**; only F8 while the free camera is on) goes on one frame (and stops the game if it was running) |
+| Slow motion | 1/8 to 3/4 (and faster, to 8x): the **-** and **=** keys, or Game → Speed in the menu (no sound off full speed) |
 | Save states | Nine slots: **F5** saves, **F9** loads, **F6** / **F7** the slot before and the next |
 
 **Gauges refill**, a training aid: a gauge is whole again a moment after its fighter was last hit.
