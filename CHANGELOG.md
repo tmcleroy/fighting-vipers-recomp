@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## 0.2.1
+
+- .chd disc images: the game, the launcher's disc check and picker and the Android app read a
+  `.chd` file as well as a `.cue` with its `.bin` files. A `.chd` holds every track in one file, the music's too (an
+  `.iso` has only the data track, so no music). libchdr's license is in the download's licenses folder.
+- Toolkit at satrecomp b258214.
+
 ## 0.2.0
 
 - Android: an app for ARM64 phones and tablets, Android 9 and later (`FightingVipers-android.apk`). Touch controls beside
