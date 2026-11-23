@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- The launcher's Game page has a link to the Discord server under Play: find players for a match, tell us what to fix
+  or add, hear about new versions first. In the in-game menu, Reset all options asks "Are you sure?" first.
+
 ## 0.2.1
 
 - .chd disc images: the game, the launcher's disc check and picker and the Android app read a
