@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Which controller is which player: the launcher's Controllers page gives each connected gamepad Automatic, Player 1,
+  Player 2 or Not used. On a Steam Deck, set its own controls to Not used and two gamepads plugged into it play each
+  other. With nothing chosen, gamepads go to the players in the order they were connected, as before.
 - The launcher's Game page has a link to the Discord server under Play: find players for a match, tell us what to fix
   or add, hear about new versions first. In the in-game menu, Reset all options asks "Are you sure?" first.
 
