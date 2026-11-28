@@ -33,7 +33,17 @@ constexpr Palette kDark = {
     IM_COL32(48, 209, 88, 255),   IM_COL32(0, 0, 0, 128),
 };
 
+// (the in-game menu's colours, recomp-common's menu.cpp window look: the Tabs layout)
+constexpr Palette kMenu = {
+    IM_COL32(11, 14, 19, 255),    IM_COL32(15, 19, 26, 255),    IM_COL32(20, 25, 34, 255),    IM_COL32(232, 236, 242, 255),
+    IM_COL32(154, 165, 182, 255), IM_COL32(112, 122, 140, 255), IM_COL32(31, 37, 48, 255),    IM_COL32(26, 33, 48, 255),
+    IM_COL32(34, 42, 58, 255),    IM_COL32(42, 52, 70, 255),    IM_COL32(124, 196, 255, 255), IM_COL32(159, 211, 255, 255),
+    IM_COL32(8, 17, 28, 255),     IM_COL32(124, 196, 255, 255), IM_COL32(124, 196, 255, 40),  IM_COL32(240, 128, 116, 255),
+    IM_COL32(126, 224, 168, 255), IM_COL32(0, 0, 0, 140),
+};
+
 bool g_dark = false;
+bool g_menu = false;
 float g_scale = 1.0f;
 float g_delta = 0.0f;
 bool g_animating = false;
@@ -119,7 +129,11 @@ bool dark() {
 }
 
 const Palette& palette() {
-    return g_dark ? kDark : kLight;
+    return g_menu ? kMenu : g_dark ? kDark : kLight;
+}
+
+void set_menu_look(bool on) {
+    g_menu = on;
 }
 
 float scale() {
@@ -154,7 +168,7 @@ void apply_style(float value) {
     style.Colors[ImGuiCol_Text] = color(p.text);
     style.Colors[ImGuiCol_WindowBg] = color(p.background);
     style.Colors[ImGuiCol_ChildBg] = ImVec4(0, 0, 0, 0);
-    style.Colors[ImGuiCol_PopupBg] = color(g_dark ? IM_COL32(36, 36, 40, 255) : IM_COL32(255, 255, 255, 255));
+    style.Colors[ImGuiCol_PopupBg] = color(g_menu ? IM_COL32(22, 28, 38, 255) : g_dark ? IM_COL32(36, 36, 40, 255) : IM_COL32(255, 255, 255, 255));
     style.Colors[ImGuiCol_Border] = color(p.separator);
     style.Colors[ImGuiCol_ScrollbarBg] = ImVec4(0, 0, 0, 0);
     style.Colors[ImGuiCol_ScrollbarGrab] = color(fade(p.tertiary, 0.55f));
@@ -250,6 +264,29 @@ void text(const char* value, Font font, float value_size, ImU32 text_color, floa
     }
     ImGui::PopStyleColor();
     pop_font();
+}
+
+void pieces(const std::vector<Piece>& list, const char* between, float value_size, ImU32 color, ImU32 strong_color, float wrap) {
+    const ImVec2 origin = ImGui::GetCursorScreenPos();
+    ImDrawList* draw = ImGui::GetWindowDrawList();
+    const float line = std::round(value_size * scale() * 1.3f);
+    float x = 0.0f, y = 0.0f, widest = 0.0f;
+    for (size_t n = 0; n < list.size(); n++) {
+        const Piece& piece = list[n];
+        const std::string shown = piece.text + (n + 1 < list.size() ? between : "");
+        const Font font = piece.strong ? Font::Semibold : Font::Regular;
+        push_font(font, value_size);
+        const float width = ImGui::CalcTextSize(shown.c_str()).x;
+        if (x > 0.0f && wrap > 0.0f && x + width > wrap) {
+            x = 0.0f;
+            y += line;
+        }
+        draw->AddText(origin + ImVec2(x, y), piece.strong ? strong_color : color, shown.c_str());
+        pop_font();
+        x += width;
+        widest = std::max(widest, x);
+    }
+    ImGui::Dummy(ImVec2(wrap > 0.0f ? std::min(widest, wrap) : widest, list.empty() ? 0.0f : y + line));
 }
 
 namespace {

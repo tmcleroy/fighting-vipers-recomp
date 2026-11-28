@@ -17,6 +17,7 @@
 #include <future>
 #include <memory>
 #include <mutex>
+#include <map>
 #include <string>
 #include <thread>
 #include <vector>
@@ -24,6 +25,7 @@
 #include "game_process.h"
 #include "launcher.h"
 #include "online.h"
+#include "own_shaders.h"
 #include "settings.h"
 #ifdef LAUNCHER_UPDATE_REPO
 #include "update.h"
@@ -74,6 +76,10 @@ public:
     // main.cpp switches them off for those frames. (A collection's launcher, whose games can run several at
     // once, is paused only while one runs and the launcher's window is not the one in front.)
     bool navigation_paused() const;
+    // The gamepad being tested on the Controllers page (0: none): its buttons and sticks only show in the test there,
+    // and move nothing in the launcher (main.cpp leaves it out of ImGui's gamepads), until its B is held for a second,
+    // the test is stopped with the mouse or another gamepad, or the page is left
+    SDL_JoystickID testing_pad() const { return testing_pad_; }
     // A finger dragged on a touch screen (main.cpp): over the sidebar (x, in the window's points, is in it) its list is
     // scrolled by `by` points, as the mouse wheel scrolls it; false where it is not the sidebar's
     bool scroll_sidebar(float x, float by);
@@ -86,6 +92,7 @@ private:
         std::string name;                // its name; its player folder is named by it
         std::string series;              // a collection's game's series (launcher::CollectionGame::series), or ""
         std::string released, hardware;  // (launcher::CollectionGame's: for sorting and the hardware choice)
+        std::string mod_of;              // the id of the game it is a mod of (launcher::CollectionGame::mod_of), or ""
         std::string exe;                 // its program, beside the launcher
         std::string file_section;        // launcher.ini: where its file is ("game", or "game.<id>")
         std::string video_section;       // its Display switches ("video", or "video.<id>")
@@ -93,6 +100,7 @@ private:
         recomp::Ini settings;            // its settings.ini: features, controls
         std::vector<recomp::FeatureInfo> features;
         std::string features_error;
+        std::string program_note;        // what its program's --list-features says of it (settings.h: FeatureListNote), or ""
         std::string file_path;
         launcher::FileCheck file;        // (under mutex_ when checked on a thread)
         std::atomic<bool> checking{false};
@@ -107,6 +115,10 @@ private:
         // What another game's menu changed of a feature they share while this one was running: set when it
         // ends, unless its own menu changed the same feature
         std::vector<std::pair<std::string, int>> pending;
+        // Its own shader preset (own_shaders.h) when it was started, and another game's menu's choice of one while it
+        // ran, as `pending` (has_pending_own: there is one)
+        std::string own_shader_before, pending_own;
+        bool has_pending_own = false;
 
         explicit Slot(const std::filesystem::path& settings_path) : settings(settings_path) {}
         std::filesystem::path program() const;
@@ -131,6 +143,18 @@ private:
     };
 
     // A game's feature on the pages: the port's feature_shown, given the game's file if it was found good
+    // The Tabs layout (Description::layout): the pages as tabs along the top, a collection's games as a grid
+    bool tabbed() const { return about_.layout == launcher::Description::Layout::Tabs; }
+    void top_bar(float width);
+    void find_card(float width);
+    int tab_count() const;
+    void library_grid(float width);
+    void library_pane(size_t which, float width, float height);
+    void open_details(size_t which);
+    SDL_Texture* tile_picture(size_t which, int& w, int& h);
+    bool in_launcher(const recomp::FeatureInfo& info) const;
+    void board_card(size_t which, float width);
+    void controller_features_card(float width);
     bool feature_shown(const Slot& one, size_t feature);
     // ... and which of its choices the port's choice_shown leaves out (empty: none)
     std::vector<bool> hidden_choices(const Slot& one, size_t feature);
@@ -178,12 +202,21 @@ private:
     struct Row {
         size_t game = 0;       // the game's; a series': its first game's
         bool series = false;   // the series' row
-        bool inside = false;   // a game's row under its series'
+        bool inside = false;   // a game's row under its series' (or a mod's under its game's)
+        bool mod = false;      // a mod's row under the game it is a mod of (Slot::mod_of)
     };
     std::vector<Row> rows() const;
     // launcher.ini, [games] open: the series whose rows are open (their names)
     bool series_open(const std::string& series) const;
     void open_series(const std::string& series, bool open);
+    // A game's mods (Slot::mod_of): the game a mod is of, when that game has a page (else the mod is a game of its
+    // own in the list: npos); the mods of a game that have a page, in the player's order; with_mods, a list of
+    // games with each one's mods after it. launcher.ini, [games] mods_open: the games whose mods' rows are open (ids)
+    size_t mod_parent(size_t which) const;
+    std::vector<size_t> mods_of(size_t which) const;
+    std::vector<size_t> with_mods(const std::vector<size_t>& list) const;
+    bool mods_open(const std::string& id) const;
+    void open_mods(const std::string& id, bool open);
     // A change to the sidebar's rows (a series opened or closed, a game moved), the page shown staying the one it was
     // (a game's in a series that closes: the series')
     void keep_page(const std::function<void()>& change);
@@ -216,6 +249,7 @@ private:
     // Features (settings.h: the rules the game follows too).
     void load_features(Slot& slot);
     void find_shared();
+    void give_shared();  // (a game new to the collection: what the others have of a shared feature)
     void set_preset(const std::string& preset);
     void set_feature(Slot& slot, size_t index, int value);
     void set_shared(size_t index, int value);
@@ -369,6 +403,17 @@ private:
     const launcher::Collection* collection_ = nullptr;  // a collection's launcher's (a port's: none)
     SDL_Window* window_;
     int page_ = 0;
+    // (the Tabs layout: the game chosen in the grid, and each game's picture: its last screen, picture.png, or its
+    // newest screenshot; looked for again now and then)
+    size_t picked_game_ = static_cast<size_t>(-1);
+    struct Picture {
+        std::filesystem::path path;
+        std::filesystem::file_time_type time{};
+        SDL_Texture* texture = nullptr;
+        int w = 0, h = 0;
+        Uint64 looked = 0;
+    };
+    std::map<std::string, Picture> pictures_;
     std::filesystem::path folder_;          // the player's (a collection's: its own, with its launcher.ini)
     recomp::Ini prefs_;     // launcher.ini: where each game's file is, the Display switches
     std::filesystem::path program_folder_;  // the launcher's
@@ -411,6 +456,18 @@ private:
     bool focus_search_ = false;      // Ctrl+F (or Cmd+F): into the search box
     std::vector<std::string> menu_choices_open_;  // the features whose choices for the game's menu are shown
 
+    // The player's own shader presets (Description::own_shaders, own_shaders.h): the shared folder ("" for none), what
+    // was found in it (looked at again every two seconds while its rows are drawn), and the games the rows set (those
+    // of the feature list being drawn)
+    std::filesystem::path own_shaders_;
+    std::vector<recomp::shaders::Preset> own_found_;
+    std::chrono::steady_clock::time_point own_looked_{};
+    std::vector<Slot*> own_shader_slots_;
+    bool own_shader_feature(const recomp::FeatureInfo& info) const;
+    // The rows under the feature: Your own preset and the folder's (set_choice chooses the feature's own choice)
+    void own_shader_rows(float width, const FeatureRow& feature, const std::function<void(int)>& set_choice);
+    void set_own_shader(const std::string& name);
+
     std::string steam_message_;  // what Add to Steam did
     char online_address_[256] = {};  // the Online card's Join address (launcher.ini [online] address)
     bool online_loaded_ = false;
@@ -442,6 +499,12 @@ private:
     bool relaunched_ = false;  // (the new version has been started: this one quits)
 #endif
     int selected_pad_ = 0;
+    SDL_JoystickID testing_pad_ = 0;  // (testing_pad())
+    Uint64 test_back_since_ = 0;      // when the tested gamepad's B went down (held a second: the test stops)
+    bool test_shown_ = false;         // the Controllers page drew the test in the last frame
+    void pad_test_frame();
+    recomp::PadChoices pad_choices_;  // which gamepad is which player's ([controllers]: every game's settings.ini)
+    void choose_pad_player(const std::string& identity, int player);
     recomp::Bindings bindings_{};  // (a collection's are every game's)
     std::vector<recomp::Bindings> own_bindings_;  // (a collection's: each game's own layout, for those that have one)
     int bind_slot_ = -1;          // whose layout the Controllers page shows: every game's (-1), or one game's

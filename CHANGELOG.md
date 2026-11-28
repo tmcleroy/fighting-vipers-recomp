@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- **The in-game menu in tabs, and a launcher that shows only what is set before the game starts.** Back, Save state,
+  Load state, Slot, Reset game, Quit game and Resume stay in a row at the top; every option is under one of the tabs
+  Game, Display, Sound, Online, Training, Modes, Stage, Cheats and Capture (the empty ones are hidden). LB/RB (or Q/E)
+  change tab, X (or Delete) puts an option back as the Enhanced preset has it, and an option changed from that is
+  marked. The launcher has a Settings tab (Pure or Enhanced, and the window's size; every other option is in the
+  in-game menu, and what you change there stays that way), and the game's tile shows the picture it left on
+  quitting. Toolkit at satrecomp (menu-tabs).
 - The launcher's Game page has a link to the Discord server under Play: find players for a match, tell us what to fix
   or add, hear about new versions first. In the in-game menu, Reset all options asks "Are you sure?" first.
 

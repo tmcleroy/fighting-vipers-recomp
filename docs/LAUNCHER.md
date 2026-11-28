@@ -9,13 +9,14 @@ switches (full screen, high resolution, widescreen) and **Play**. The launcher c
 the release this port is made from (USA, `MK-81041`, V2.000) and remembers where it is; it never copies,
 moves or changes it. On SteamOS, **Add to Steam** puts the game in Game Mode.
 
-### The Features page
+### The Settings page
 
-![The launcher's Features page: Pure, Enhanced or your own choice](screenshots/launcher-features.png)
+![The launcher's Settings page: Pure or Enhanced, and the window's size](screenshots/launcher-features.png)
 
 **Pure** plays the game exactly as it was on the Saturn; **Enhanced** turns on the improvements; or choose
-your own. A feature changed in the in-game menu is kept here too. Beside the [training aids](TRAINING.md) and
-the [picture's options](PICTURE.md):
+your own. The launcher shows only what has to be set before the game starts (the window's size); every other option
+is in the in-game menu (Esc), where it can be tried on the picture, and stays as you set it. Those are, beside the
+[training aids](TRAINING.md) and the [picture's options](PICTURE.md):
 
 - **Armour** (one at a time): armour that stays on (it takes no damage, and armour knocked off is put back),
   an opponent without it, or nobody with it.
@@ -27,7 +28,7 @@ the [picture's options](PICTURE.md):
 
 ### Run-ahead
 
-Off, 1 frame or 2 frames (the Features page, or the menu's Game page): what you press is seen that much
+Off, 1 frame or 2 frames (the menu's Game tab): what you press is seen that much
 sooner, with the game running exactly as without it. It takes two or three times the processor: too much for
 a Steam Deck, where it plays below full speed.
 
@@ -60,13 +61,15 @@ kick**: buttons pressed together, held as one. They have no key or button until 
 | **F12** | Screenshot, to `screenshots/` in your files |
 | The right stick, or **I** / **J** / **K** / **L**; **U** / **O** | With the free camera on: turn it; come nearer and go farther (**F8** is then the frame step) |
 
-![The menu while playing: Display, Game, Alternative modes, save states, the reset point](screenshots/menu.jpg)
+![The menu while playing: the commands along the top, the Game tab, its option beside](screenshots/menu.jpg)
 
-The **in-game menu** stops the game while it is open, laid out as in the other recomp ports: **Display**, **Game**
-(the speed, mute, Cheats, Pictures and the game's options), **Alternative modes** (Training mode, with the dummy's
-and the armour's pages under it), save and load a state (nine slots), the reset point, **Reset all options** (every
-option back to the Enhanced preset, and full speed), **Reset game** (the game starts again as when switched on; your
-saves are kept) and **Quit game**, which is how you leave (Esc only closes the menu). Up and down choose a row
+The **in-game menu** stops the game while it is open, laid out in tabs as in the other recomp ports. Along the top:
+**Back**, save and load a state (nine slots), the slot, **Reset game** (the game starts again as when switched on; your
+saves are kept) and **Quit game**, which is how you leave (Esc only closes the menu). Under them, the tabs: **Game**
+(the speed, mute, the game's options, Pictures, the reset point, and **Reset all options**: every option back to the
+Enhanced preset, and full speed), **Display**, **Training** (Training mode, with the dummy's and the armour's pages
+under it) and **Cheats**. Q and E (LB and RB) change tab; Delete (X) puts the option chosen back as the Enhanced
+preset has it, and an option changed from that is marked. Up and down choose a row
 (held, they go on); Enter or A changes it or goes into a page; Backspace or B goes back a page; left and right
 change a row with several values. The mouse works it too: point at a row, click, and the right button goes back.
 
