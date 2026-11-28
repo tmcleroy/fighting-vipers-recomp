@@ -1,8 +1,7 @@
 # Training mode
 
 The training aids work in the game's own **TRAINING MODE** (on its main menu) and stay off in the other
-modes, so an aid left on does nothing in arcade or versus. They are switches on the launcher's Features
-page and in the in-game menu under **Alternative modes → Training mode**, with the dummy's choices on its
+modes, so an aid left on does nothing in arcade or versus. They are switches in the in-game menu under its **Training** tab, with the dummy's choices on its
 **Dummy** page; the menu and the settings keep what you chose either way.
 
 ![Training displays: inputs, armour, frame data and the hit overlay](screenshots/training.jpg)

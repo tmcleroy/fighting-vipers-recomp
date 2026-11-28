@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+- **The in-game menu in tabs, and a launcher that shows only what is set before the game starts.** Back, Save state,
+  Load state, Slot, Reset game, Quit game and Resume stay in a row at the top; every option is under one of the tabs
+  Game, Display, Sound, Online, Training, Modes, Stage, Cheats and Capture (the empty ones are hidden). LB/RB (or Q/E)
+  change tab, X (or Delete) puts an option back as the Enhanced preset has it, and an option changed from that is
+  marked. The launcher has a Settings tab (Pure or Enhanced, and the window's size; every other option is in the
+  in-game menu, and what you change there stays that way), and the game's tile shows the picture it left on
+  quitting. Toolkit at satrecomp (menu-tabs).
+- **Hotkeys for the in-game menu's options**: H (or a gamepad's Y) on an option's row asks for a key or button; while
+  playing it then steps that option (run-ahead through its frames, the shader through its list, a switch on and off;
+  Shift with a key goes back), and what it is now shows at the bottom. Keys and buttons that play the game, and the
+  menu's own, can't be one. Kept per game in settings.ini. The menu on a stood-up picture fits.
 - Which controller is which player: the launcher's Controllers page gives each connected gamepad Automatic, Player 1,
   Player 2 or Not used. On a Steam Deck, set its own controls to Not used and two gamepads plugged into it play each
   other. With nothing chosen, gamepads go to the players in the order they were connected, as before.

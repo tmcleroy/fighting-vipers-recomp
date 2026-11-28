@@ -60,7 +60,7 @@ stay off in the other modes.
   ([more](docs/LAUNCHER.md#run-ahead)).
 - **Armour** that stays on, or fighters without it; **cheats** (no damage, one-hit knockouts, infinite time,
   everything unlocked without touching your save);
-  **quick rounds** ([more](docs/LAUNCHER.md#the-features-page)).
+  **quick rounds** ([more](docs/LAUNCHER.md#the-settings-page)).
 - **Controls**: a gamepad or the keyboard for two players, every button changeable, and buttons pressed together on
   one key ([more](docs/LAUNCHER.md#controllers)).
 - **Updates** in the launcher, and a **portable mode** that keeps everything beside the program ([the
@@ -78,7 +78,7 @@ Download the file for your system from the [releases page](../../releases), then
 | Windows 10 or later, x64 | `FightingVipers-windows-x64.zip` | Unzip and run `fighting_vipers-launcher.exe`. Windows warns about an unknown publisher the first time: choose **More info**, then **Run anyway**. |
 | Android 9 or later, ARM64 phones and tablets | `FightingVipers-android.apk` | Open it on the phone and allow installing from where you opened it. In the app, choose the disc's .chd file, or its .cue file and all its .bin files together: they are copied into the app's folder. |
 
-In the launcher, drop your disc image's `.chd` or `.cue` file on the window (or choose it), choose **Features** and
+In the launcher, drop your disc image's `.chd` or `.cue` file on the window (or choose it), choose **Settings** and
 **Controllers** as you like (or leave them), and **Play**. The launcher checks that the image is the release this
 port is made from (USA, `MK-81041`, V2.000) and remembers where it is; it never copies, moves or changes it.
 
