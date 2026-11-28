@@ -9,6 +9,13 @@
   marked. The launcher has a Settings tab (Pure or Enhanced, and the window's size; every other option is in the
   in-game menu, and what you change there stays that way), and the game's tile shows the picture it left on
   quitting. Toolkit at satrecomp (menu-tabs).
+- **Hotkeys for the in-game menu's options**: H (or a gamepad's Y) on an option's row asks for a key or button; while
+  playing it then steps that option (run-ahead through its frames, the shader through its list, a switch on and off;
+  Shift with a key goes back), and what it is now shows at the bottom. Keys and buttons that play the game, and the
+  menu's own, can't be one. Kept per game in settings.ini. The menu on a stood-up picture fits.
+- Which controller is which player: the launcher's Controllers page gives each connected gamepad Automatic, Player 1,
+  Player 2 or Not used. On a Steam Deck, set its own controls to Not used and two gamepads plugged into it play each
+  other. With nothing chosen, gamepads go to the players in the order they were connected, as before.
 - The launcher's Game page has a link to the Discord server under Play: find players for a match, tell us what to fix
   or add, hear about new versions first. In the in-game menu, Reset all options asks "Are you sure?" first.
 
